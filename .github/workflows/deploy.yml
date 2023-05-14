@@ -20,3 +20,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - run: aws s3 sync ./out s3://taskify-frontend
+      - run: aws cloudfront create-invalidation --distribution-id E1J9F703UBEMBX --paths "/*"
