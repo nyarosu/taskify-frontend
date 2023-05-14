@@ -50,7 +50,7 @@ const Login = () => (
         </Stack>
         <HStack spacing="1" justify="center">
           <Text fontSize="sm" color="muted">
-            Don't have an account?
+            Don&apos;t have an account?
           </Text>
           <Button variant="link" colorScheme="blue" size="sm">
             Sign up
