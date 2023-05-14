@@ -13,7 +13,7 @@ import {
 import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { Router, useRouter } from "next/router";
 
-export default function index() {
+export default function Index() {
   const router = useRouter();
 
   return (
