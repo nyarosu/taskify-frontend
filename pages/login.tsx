@@ -32,6 +32,7 @@ const Login = () => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         email: loginFormHandler.values.email,
         password: loginFormHandler.values.password,
@@ -40,7 +41,9 @@ const Login = () => {
 
     if (response.ok) {
       console.log("Authenticated!");
-      const response2 = await fetch(`${API_URL}/tasks`);
+      const response2 = await fetch(`${API_URL}/tasks`, {
+        credentials: "include",
+      });
       console.log(response2.ok);
     } else {
       console.log("AUth failed!");
