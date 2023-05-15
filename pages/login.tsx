@@ -21,8 +21,11 @@ import { useFormik } from "formik";
 import { API_URL } from "./_app";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { login } from "@/utils/store";
+import { useAppDispatch } from "@/utils/redux_hooks";
 
 const Login = () => {
+  const dispatcher = useAppDispatch();
   const router = useRouter();
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
@@ -59,6 +62,16 @@ const Login = () => {
 
     if (response.ok) {
       setLoginLoading(false);
+      const json = await response.json();
+      dispatcher(
+        login({
+          first_name: json.first_name,
+          last_name: json.last_name,
+          email: json.email,
+          company: json.company,
+          picture: /* TODO */ "",
+        })
+      );
       router.push("/dashboard", undefined, { shallow: true });
     } else {
       setLoginLoading(false);
@@ -67,9 +80,19 @@ const Login = () => {
   }
 
   async function checkAlreadyLoggedIn() {
-    const response = await fetch(`${API_URL}/auth`, { credentials: "include" });
+    const response = await fetch(`${API_URL}/me`, { credentials: "include" });
     if (response.ok) {
       setIsLoggedIn(true);
+      const json = await response.json();
+      dispatcher(
+        login({
+          first_name: json.first_name,
+          last_name: json.last_name,
+          email: json.email,
+          company: json.company,
+          picture: /* TODO */ "",
+        })
+      );
       router.push("/dashboard", undefined, { shallow: true });
     }
   }
