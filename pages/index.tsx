@@ -38,7 +38,7 @@ export default function Index() {
             lineHeight={"110%"}
           >
             Augment your software projects with <br />
-            <Text as={"span"} color={"green.400"}>
+            <Text as={"span"} color={"blue.400"}>
               AI insights and IDE support
             </Text>
           </Heading>
@@ -59,8 +59,8 @@ export default function Index() {
             position={"relative"}
           >
             <Button
-              colorScheme={"green"}
-              bg={"green.400"}
+              colorScheme={"blue"}
+              bg={"blue.400"}
               rounded={"full"}
               px={6}
               onClick={() => {
