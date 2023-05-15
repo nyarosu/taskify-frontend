@@ -38,16 +38,6 @@ const Login = () => {
         password: loginFormHandler.values.password,
       }),
     });
-
-    if (response.ok) {
-      console.log("Authenticated!");
-      const response2 = await fetch(`${API_URL}/tasks`, {
-        credentials: "include",
-      });
-      console.log(response2.ok);
-    } else {
-      console.log("AUth failed!");
-    }
   }
   return (
     <>
