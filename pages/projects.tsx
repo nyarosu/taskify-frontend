@@ -31,7 +31,7 @@ const Projects = () => {
           ) : (
             <Box p={4} borderRadius="md" textAlign="center" boxShadow="md">
               <Heading as="h2" size="md" mb={2}>
-                You don't have any projects.
+                You don&apos;t have any projects.
               </Heading>
               <Text fontSize="sm" color="gray.500">
                 Start creating projects to see them here.
