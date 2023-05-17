@@ -82,7 +82,6 @@ const Login = () => {
   async function checkAlreadyLoggedIn() {
     const response = await fetch(`${API_URL}/me`, { credentials: "include" });
     if (response.ok) {
-      setIsLoggedIn(true);
       const json = await response.json();
       dispatcher(
         login({
@@ -93,6 +92,7 @@ const Login = () => {
           picture: /* TODO */ "",
         })
       );
+      setIsLoggedIn(true);
       router.push("/dashboard", undefined, { shallow: true });
     }
   }

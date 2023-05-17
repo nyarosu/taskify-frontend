@@ -17,8 +17,10 @@ import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
 import { Logo } from "./Logo";
 import { Sidebar } from "./Sidebar";
 import { ToggleButton } from "./ToggleButton";
+import { useRouter } from "next/router";
 
 export const Navbar = () => {
+  const router = useRouter();
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onToggle, onClose } = useDisclosure();
 
@@ -30,11 +32,40 @@ export const Navbar = () => {
             <Logo />
             {isDesktop && (
               <ButtonGroup variant="ghost" spacing="1">
-                <Button>Home</Button>
-                <Button aria-current="page">Dashboard</Button>
-                <Button>Tasks</Button>
-                <Button>Bookmarks</Button>
-                <Button>Users</Button>
+                <Button
+                  aria-current={
+                    router.pathname === "/dashboard" ? "page" : undefined
+                  }
+                  onClick={() => {
+                    router.push("/dashboard", undefined, { shallow: true });
+                  }}
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  aria-current={
+                    router.pathname === "/projects" ? "page" : undefined
+                  }
+                  onClick={() => {
+                    router.push("/projects", undefined, { shallow: true });
+                  }}
+                >
+                  Projects
+                </Button>
+                <Button
+                  aria-current={
+                    router.pathname === "/tasks" ? "page" : undefined
+                  }
+                >
+                  Tasks
+                </Button>
+                <Button
+                  aria-current={
+                    router.pathname === "/company" ? "page" : undefined
+                  }
+                >
+                  Company
+                </Button>
               </ButtonGroup>
             )}
           </HStack>
