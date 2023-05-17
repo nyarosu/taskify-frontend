@@ -9,11 +9,7 @@ const Dashboard = () => {
   const user = useAppSelector((state) => state.user);
   return (
     <SlideFade in={true}>
-      <Box as="section" height="100vh" overflowY="auto">
-        <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>
-          <DashboardContent />
-        </Container>
-      </Box>
+      <DashboardContent />
     </SlideFade>
   );
 };

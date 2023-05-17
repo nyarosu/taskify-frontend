@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
 import { Navbar } from "./Navbar";
-import { SlideFade } from "@chakra-ui/react";
+import { Box, Container, SlideFade } from "@chakra-ui/react";
 import { useAppSelector } from "@/utils/redux_hooks";
 import { useRouter } from "next/router";
 import { checkAuthStatusOrRedirect } from "@/utils/queries";
@@ -21,7 +21,13 @@ export default function LoggedInLayout({ children }: LoggedInLayoutProps) {
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <SlideFade in={true}>
+        <Box as="section" height="100vh" overflowY="auto">
+          <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>
+            {children}
+          </Container>
+        </Box>
+      </SlideFade>
     </>
   );
 }

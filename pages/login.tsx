@@ -35,9 +35,7 @@ const Login = () => {
       email: "",
       password: "",
     },
-    onSubmit: (form) => {
-      console.log(form);
-    },
+    onSubmit: () => {},
   });
 
   // Check if cookie is already set (user already logged in)
