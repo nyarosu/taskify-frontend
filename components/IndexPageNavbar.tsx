@@ -14,6 +14,7 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  HStack,
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
@@ -22,6 +23,7 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
+import { Logo } from "./Logo";
 
 export default function IndexPageNavbar() {
   const { isOpen, onToggle } = useDisclosure();
@@ -54,14 +56,9 @@ export default function IndexPageNavbar() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-            color={useColorModeValue("gray.800", "white")}
-            onClick={() => { router.push("/", undefined, { shallow: true })}}
-          >
-            Taskify
-          </Text>
+
+            <Logo boxSize="2rem" />
+
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
