@@ -39,7 +39,7 @@ export const ProjectsTable = (props: TableProps) => (
       </Tr>
     </Thead>
     <Tbody>
-      {members.map((member) => (
+      {/* {members.map((member) => (
         <Tr key={member.id}>
           <Td>
             <HStack spacing="3">
@@ -80,7 +80,7 @@ export const ProjectsTable = (props: TableProps) => (
             </HStack>
           </Td>
         </Tr>
-      ))}
+      ))} */}
     </Tbody>
   </Table>
 );

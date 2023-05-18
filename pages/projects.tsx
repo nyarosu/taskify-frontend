@@ -15,6 +15,7 @@ import { ProjectsPageHeader } from "@/components/ProjectsPageHeader";
 import { ProjectsTable } from "@/components/ProjectsTable";
 import { AiOutlinePlus } from "react-icons/ai";
 import { members } from "@/components/data";
+import NoProjectsMessage from "@/components/NoProjectsMessage";
 import CreateProjectModal from "@/components/CreateProjectModal";
 
 const Projects = () => {
@@ -29,23 +30,7 @@ const Projects = () => {
           {hasProjects ? (
             <ProjectsTable />
           ) : (
-            <Box p={4} borderRadius="md" textAlign="center" boxShadow="md">
-              <Heading as="h2" size="md" mb={2}>
-                You don&apos;t have any projects.
-              </Heading>
-              <Text fontSize="sm" color="gray.500">
-                Start creating projects to see them here.
-              </Text>
-              <Button
-                variant="primary"
-                leftIcon={<AiOutlinePlus />}
-                width="11rem"
-                top="1rem"
-                onClick={onOpen}
-              >
-                Create a project
-              </Button>
-            </Box>
+            <NoProjectsMessage openModal={onOpen} />
           )}
         </Box>
       </SlideFade>

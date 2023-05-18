@@ -29,7 +29,7 @@ export const Navbar = () => {
       <Container py={{ base: "3", lg: "4" }}>
         <Flex justify="space-between">
           <HStack spacing="4">
-            <Logo />
+            <Logo boxSize="2rem" />
             {isDesktop && (
               <ButtonGroup variant="ghost" spacing="1">
                 <Button

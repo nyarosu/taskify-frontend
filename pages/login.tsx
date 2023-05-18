@@ -109,7 +109,7 @@ const Login = () => {
                 </Alert>
               )}
               <Stack spacing="6">
-                <Logo />
+                <Logo boxSize="4rem" alignSelf="center" />
                 <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
                   <Heading size={{ base: "xs", md: "sm" }}>
                     Log in to your account
@@ -161,7 +161,7 @@ const Login = () => {
                 <Text fontSize="sm" color="muted">
                   Don&apos;t have an account?
                 </Text>
-                <Button variant="link" colorScheme="blue" size="sm">
+                <Button variant="link" colorScheme="blue" size="sm" onClick={() => { router.push("/signup", undefined, { shallow: true })}}>
                   Sign up
                 </Button>
               </HStack>

@@ -58,6 +58,7 @@ export default function IndexPageNavbar() {
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
+            onClick={() => { router.push("/", undefined, { shallow: true })}}
           >
             Taskify
           </Text>
@@ -94,10 +95,10 @@ export default function IndexPageNavbar() {
               router.push("/signup", undefined, { shallow: true });
             }}
             color={"white"}
-            bg={"pink.400"}
+            bg={"blue.400"}
             href={"#"}
             _hover={{
-              bg: "pink.300",
+              bg: "blue.300",
             }}
           >
             Sign Up
