@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { login } from "@/utils/store";
 import { useAppDispatch } from "@/utils/redux_hooks";
+import Head from "next/head";
 
 const Login = () => {
   const dispatcher = useAppDispatch();
@@ -98,6 +99,9 @@ const Login = () => {
   return (
     !isLoggedIn && (
       <>
+        <Head>
+          <title>Taskify | Login</title>
+        </Head>
         <IndexPageNavbar />
         <SlideFade in={!isLoggedIn}>
           <Container maxW="md" py={{ base: "12", md: "24" }}>
@@ -161,7 +165,14 @@ const Login = () => {
                 <Text fontSize="sm" color="muted">
                   Don&apos;t have an account?
                 </Text>
-                <Button variant="link" colorScheme="blue" size="sm" onClick={() => { router.push("/signup", undefined, { shallow: true })}}>
+                <Button
+                  variant="link"
+                  colorScheme="blue"
+                  size="sm"
+                  onClick={() => {
+                    router.push("/signup", undefined, { shallow: true });
+                  }}
+                >
                   Sign up
                 </Button>
               </HStack>

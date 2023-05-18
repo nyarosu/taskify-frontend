@@ -17,12 +17,16 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { members } from "@/components/data";
 import NoProjectsMessage from "@/components/NoProjectsMessage";
 import CreateProjectModal from "@/components/CreateProjectModal";
+import Head from "next/head";
 
 const Projects = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const hasProjects = members.length > 0;
   return (
     <>
+      <Head>
+        <title>Taskify | Projects</title>
+      </Head>
       <CreateProjectModal isOpen={isOpen} onClose={onClose} />
       <SlideFade in={true}>
         <ProjectsPageHeader hasProjects={hasProjects} />
