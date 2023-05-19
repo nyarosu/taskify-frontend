@@ -118,7 +118,6 @@ const Login = () => {
                   <Heading size={{ base: "xs", md: "sm" }}>
                     Log in to your account
                   </Heading>
-                  <Text color="muted">Start making your dreams come true</Text>
                 </Stack>
               </Stack>
               <Stack spacing="6">
