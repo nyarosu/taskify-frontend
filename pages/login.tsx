@@ -67,7 +67,8 @@ const Login = () => {
           first_name: json.first_name,
           last_name: json.last_name,
           email: json.email,
-          company: json.company,
+          company: json.company_name,
+          companyId: json.company_id,
           picture: /* TODO */ "",
         })
       );
@@ -87,7 +88,8 @@ const Login = () => {
           first_name: json.first_name,
           last_name: json.last_name,
           email: json.email,
-          company: json.company,
+          company: json.company_name,
+          companyId: json.company_id,
           picture: /* TODO */ "",
         })
       );

@@ -10,6 +10,7 @@ interface User {
   last_name: string | null;
   email: string | null;
   company: string | null;
+  companyId: number | null;
   picture: string | null;
 }
 
@@ -18,6 +19,7 @@ const initialUserState: User = {
   last_name: null,
   email: null,
   company: null,
+  companyId: null,
   picture: null,
 };
 

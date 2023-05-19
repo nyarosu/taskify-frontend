@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
+  Alert,
+  AlertIcon,
   Button,
   Container,
   FormControl,
@@ -15,6 +17,10 @@ import {
 import { Logo } from "@/components/Logo";
 import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { useRouter } from "next/router";
+import { SignupModes } from "@/utils/SignupModes";
+import { API_URL } from "../_app";
+import { login } from "@/utils/store";
+import { useAppDispatch } from "@/utils/redux_hooks";
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -31,8 +37,15 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignupAsOrganization = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const [registerError, setRegisterError] = useState(false);
+  const [registerErrorText, setRegisterErrorText] = useState("");
+
+  const dispatcher = useAppDispatch();
+
   const router = useRouter();
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -45,8 +58,45 @@ const SignupAsOrganization = () => {
     onSubmit: handleSubmit,
   });
 
-  function handleSubmit(values: any) {
-    console.log(values);
+  async function handleSubmit(values: any) {
+    setIsRegistering(true);
+    setRegisterError(false);
+    const response = await fetch(`${API_URL}/auth/signup`, {
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      method: "POST",
+      body: JSON.stringify({
+        mode: SignupModes.Organization,
+        first_name: values.firstName,
+        last_name: values.lastName,
+        email: values.email,
+        password: values.password,
+        company_name: values.companyName,
+      }),
+    });
+
+    if (response.ok) {
+      const json = await response.json();
+      dispatcher(
+        login({
+          first_name: json.first_name,
+          last_name: json.last_name,
+          email: json.email,
+          company: json.company_name,
+          companyId: json.company_id,
+          picture: "" /* TODO */,
+        })
+      );
+      router.push("/dashboard", undefined, { shallow: true });
+    } else if (response.status === 409) {
+      setIsRegistering(false);
+      setRegisterErrorText("A user with this email already exists.");
+      setRegisterError(true);
+    } else {
+      setIsRegistering(false);
+      setRegisterErrorText("Invalid details");
+      setRegisterError(true);
+    }
   }
 
   return (
@@ -56,6 +106,12 @@ const SignupAsOrganization = () => {
       <Container maxW="md" py={{ base: "12", md: "24" }}>
         <Stack spacing="8">
           <Stack spacing="6" align="center">
+            {registerError && (
+              <Alert status="error">
+                <AlertIcon />
+                {registerErrorText}
+              </Alert>
+            )}
             <Logo boxSize="4rem" />
             <Heading size={{ base: "xs", md: "sm" }}>Create an account</Heading>
           </Stack>
@@ -143,7 +199,7 @@ const SignupAsOrganization = () => {
                 <Button
                   type="submit"
                   variant="primary"
-                  isLoading={isSubmitting}
+                  isLoading={isRegistering}
                   loadingText="Creating account"
                 >
                   Create account

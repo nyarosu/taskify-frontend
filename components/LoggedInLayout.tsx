@@ -1,21 +1,41 @@
 import { ReactNode, useEffect } from "react";
 import { Navbar } from "./Navbar";
 import { Box, Container, SlideFade } from "@chakra-ui/react";
-import { useAppSelector } from "@/utils/redux_hooks";
+import { useAppDispatch, useAppSelector } from "@/utils/redux_hooks";
 import { useRouter } from "next/router";
-import { checkAuthStatusOrRedirect } from "@/utils/queries";
 import { API_URL } from "@/pages/_app";
+import { login } from "@/utils/store";
 
 interface LoggedInLayoutProps {
   children: ReactNode;
 }
 
 export default function LoggedInLayout({ children }: LoggedInLayoutProps) {
-  // Logged in pages need to have a check to make sure user is authenticated
   const user = useAppSelector((state) => state.user);
+  const dispatcher = useAppDispatch();
   const router = useRouter();
+
+  async function checkAuth(): Promise<any> {
+    const response = await fetch(`${API_URL}/me`, { credentials: "include" });
+    if (!response.ok) {
+      router.push("/login", undefined, { shallow: true });
+    }
+    const data = await response.json();
+    dispatcher(
+      login({
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        company: data.company_name,
+        companyId: data.company_id,
+        picture: data.picture,
+      })
+    );
+  }
+
+  // Logged in pages need to have a check to make sure user is authenticated
   useEffect(() => {
-    checkAuthStatusOrRedirect(router);
+    checkAuth();
   }, []);
 
   return (

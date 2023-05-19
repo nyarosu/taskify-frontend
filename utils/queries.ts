@@ -1,16 +1,10 @@
 import { API_URL } from "@/pages/_app";
 import { NextRouter, Router } from "next/router";
 import { QueryFunctionContext } from "@tanstack/react-query";
+import { useAppDispatch } from "./redux_hooks";
 interface Credentials {
   email: string;
   password: string;
-}
-
-async function checkAuthStatusOrRedirect(router: NextRouter) {
-  const response = await fetch(`${API_URL}/me`, { credentials: "include" });
-  if (!response.ok) {
-    router.push("/login");
-  }
 }
 
 async function postLogin({ queryKey }: any) {
@@ -27,4 +21,4 @@ async function postLogin({ queryKey }: any) {
     throw new Error("Authentication failed.");
   }
 }
-export { postLogin, checkAuthStatusOrRedirect };
+export { postLogin };

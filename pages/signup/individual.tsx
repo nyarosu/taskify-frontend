@@ -72,7 +72,6 @@ const IndividualSignup = () => {
         password: values.password,
       }),
     });
-    console.log(response);
 
     if (response.ok) {
       const json = await response.json();
@@ -82,6 +81,7 @@ const IndividualSignup = () => {
           last_name: json.last_name,
           email: json.email,
           company: json.company_name,
+          companyId: json.company_id,
           picture: "" /* TODO */,
         })
       );
