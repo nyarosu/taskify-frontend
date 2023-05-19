@@ -16,6 +16,7 @@ import {
 import { Logo } from "@/components/Logo";
 import { GoogleIcon } from "@/assets/ProviderIcon";
 import IndexPageNavbar from "@/components/IndexPageNavbar";
+import { useRouter } from "next/router";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -29,7 +30,7 @@ const validationSchema = Yup.object().shape({
 
 const IndividualSignup = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -121,7 +122,14 @@ const IndividualSignup = () => {
             <Text fontSize="sm" color="muted">
               Already have an account?
             </Text>
-            <Button variant="link" colorScheme="blue" size="sm">
+            <Button
+              onClick={() => {
+                router.push("/login", undefined, { shallow: true });
+              }}
+              variant="link"
+              colorScheme="blue"
+              size="sm"
+            >
               Log in
             </Button>
           </HStack>

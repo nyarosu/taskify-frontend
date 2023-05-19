@@ -2,8 +2,10 @@ import {
   Button,
   Container,
   Divider,
+  HStack,
   Heading,
   Input,
+  Text,
   SlideFade,
   Stack,
 } from "@chakra-ui/react";
@@ -56,6 +58,21 @@ const Signup = () => {
                 Sign up as an individual user
               </Button>
             </Stack>
+            <HStack alignSelf="center">
+              <Text fontSize="sm" color="muted">
+                Already have an account?
+              </Text>
+              <Button
+                variant="link"
+                colorScheme="blue"
+                size="sm"
+                onClick={() => {
+                  router.push("/login", undefined, { shallow: true });
+                }}
+              >
+                Log in
+              </Button>
+            </HStack>
           </Stack>
         </Container>
       </SlideFade>

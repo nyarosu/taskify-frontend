@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Logo } from "@/components/Logo";
 import IndexPageNavbar from "@/components/IndexPageNavbar";
+import { useRouter } from "next/router";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -28,7 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const SignupAsOrganization = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -128,7 +129,14 @@ const SignupAsOrganization = () => {
             <Text fontSize="sm" color="muted">
               Already have an account?
             </Text>
-            <Button variant="link" colorScheme="blue" size="sm">
+            <Button
+              variant="link"
+              colorScheme="blue"
+              size="sm"
+              onClick={() => {
+                router.push("/login", undefined, { shallow: true });
+              }}
+            >
               Log in
             </Button>
           </Stack>
