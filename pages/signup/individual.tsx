@@ -39,7 +39,10 @@ const validationSchema = Yup.object().shape({
 
 const IndividualSignup = () => {
   const [isRegistering, setIsRegistering] = useState(false);
+
   const [registerError, setRegisterError] = useState(false);
+  const [registerErrorText, setRegisterErrorText] = useState("");
+
   const dispatcher = useAppDispatch();
 
   const router = useRouter();
@@ -83,8 +86,13 @@ const IndividualSignup = () => {
         })
       );
       router.push("/dashboard", undefined, { shallow: true });
+    } else if (response.status === 409) {
+      setIsRegistering(false);
+      setRegisterErrorText("A user with this email already exists.");
+      setRegisterError(true);
     } else {
       setIsRegistering(false);
+      setRegisterErrorText("Invalid details");
       setRegisterError(true);
     }
   }
@@ -99,7 +107,7 @@ const IndividualSignup = () => {
             {registerError && (
               <Alert status="error">
                 <AlertIcon />
-                User already exists.
+                {registerErrorText}
               </Alert>
             )}
             <Logo boxSize="4rem" />

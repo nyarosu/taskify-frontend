@@ -17,9 +17,12 @@ import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { useRouter } from "next/router";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required("Name is required")
-    .matches(/^[a-zA-Z\s]*$/, "Name must not contain numbers"),
+  firstName: Yup.string()
+    .required("First name is required")
+    .matches(/^[a-zA-Z\s]*$/, "First name must not contain numbers"),
+  lastName: Yup.string()
+    .required("Last name is required")
+    .matches(/^[a-zA-Z\s]*$/, "Last name must not contain numbers"),
   email: Yup.string().required("Email is required").email("Invalid email"),
   password: Yup.string()
     .required("Password is required")
@@ -32,7 +35,8 @@ const SignupAsOrganization = () => {
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       companyName: "",
@@ -58,18 +62,40 @@ const SignupAsOrganization = () => {
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing="6">
               <Stack spacing="5">
-                <FormControl
-                  isRequired
-                  isInvalid={!!formik.errors.name && formik.touched.name}
-                >
-                  <FormLabel htmlFor="name">Name</FormLabel>
-                  <Input
-                    id="name"
-                    type="text"
-                    {...formik.getFieldProps("name")}
-                  />
-                  <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
-                </FormControl>
+                <Stack spacing="3" direction={{ base: "column", md: "row" }}>
+                  <FormControl
+                    isRequired
+                    isInvalid={
+                      !!formik.errors.firstName && formik.touched.firstName
+                    }
+                  >
+                    <FormLabel htmlFor="firstName">First Name</FormLabel>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      {...formik.getFieldProps("firstName")}
+                    />
+                    <FormErrorMessage>
+                      {formik.errors.firstName}
+                    </FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    isRequired
+                    isInvalid={
+                      !!formik.errors.lastName && formik.touched.lastName
+                    }
+                  >
+                    <FormLabel htmlFor="lastName">Last Name</FormLabel>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      {...formik.getFieldProps("lastName")}
+                    />
+                    <FormErrorMessage>
+                      {formik.errors.lastName}
+                    </FormErrorMessage>
+                  </FormControl>
+                </Stack>
                 <FormControl
                   isRequired
                   isInvalid={
