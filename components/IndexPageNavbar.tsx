@@ -56,9 +56,12 @@ export default function IndexPageNavbar() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-
-            <Logo boxSize="2rem" />
-
+          <Logo
+            boxSize="2rem"
+            onClick={() => {
+              router.push("/", undefined, { shallow: true });
+            }}
+          />
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />

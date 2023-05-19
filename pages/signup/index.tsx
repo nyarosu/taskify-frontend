@@ -12,8 +12,10 @@ import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { CgOrganisation } from "react-icons/cg";
 import { BsFillPersonFill } from "react-icons/bs";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const Signup = () => {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -34,10 +36,23 @@ const Signup = () => {
                 variant="primary"
                 iconSpacing="3"
                 leftIcon={<CgOrganisation />}
+                onClick={() => {
+                  router.push("/signup/organization", undefined, {
+                    shallow: true,
+                  });
+                }}
               >
-                Sign up as an organisation
+                Sign up as an organization
               </Button>
-              <Button variant="secondary" leftIcon={<BsFillPersonFill />}>
+              <Button
+                variant="secondary"
+                leftIcon={<BsFillPersonFill />}
+                onClick={() => {
+                  router.push("/signup/individual", undefined, {
+                    shallow: true,
+                  });
+                }}
+              >
                 Sign up as an individual user
               </Button>
             </Stack>
