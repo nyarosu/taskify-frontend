@@ -154,7 +154,7 @@ const Login = () => {
                   <Button
                     isLoading={loginLoading}
                     variant="solid"
-                    colorScheme="green"
+                    colorScheme="blue"
                     onClick={submitLoginHandler}
                   >
                     Sign in
