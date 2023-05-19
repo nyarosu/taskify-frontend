@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 import { API_URL } from "../_app";
 import { useAppDispatch } from "@/utils/redux_hooks";
 import { login } from "@/utils/store";
-import { SignupModes } from "@/utils/SignUpModes";
+import { SignupModes } from "@/utils/SignupModes";
 
 const validationSchema = Yup.object().shape({
   firstName: Yup.string()
