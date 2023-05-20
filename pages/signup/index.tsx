@@ -12,7 +12,12 @@ import {
 import { Logo } from "@/components/Logo";
 import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { CgOrganisation } from "react-icons/cg";
-import { BsFillPersonFill } from "react-icons/bs";
+import {
+  BsFillPersonFill,
+  BsBuildingAdd,
+  BsFillBuildingFill,
+  BsBuildingFillAdd,
+} from "react-icons/bs";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -37,7 +42,7 @@ const Signup = () => {
               <Button
                 variant="primary"
                 iconSpacing="3"
-                leftIcon={<CgOrganisation />}
+                leftIcon={<BsFillBuildingFill />}
                 onClick={() => {
                   router.push("/signup/organization", undefined, {
                     shallow: true,
@@ -46,6 +51,15 @@ const Signup = () => {
               >
                 Sign up as an organization
               </Button>
+              <Button
+                variant="primary"
+                iconSpacing="3"
+                leftIcon={<BsBuildingFillAdd />}
+                onClick={() => {}}
+              >
+                Join an existing organization
+              </Button>
+              <Divider />
               <Button
                 variant="secondary"
                 leftIcon={<BsFillPersonFill />}
