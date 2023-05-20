@@ -18,9 +18,12 @@ import { Logo } from "./Logo";
 import { Sidebar } from "./Sidebar";
 import { ToggleButton } from "./ToggleButton";
 import { useRouter } from "next/router";
+import { useAppSelector } from "@/utils/redux_hooks";
 
 export const Navbar = () => {
   const router = useRouter();
+  const user = useAppSelector((state) => state.user);
+
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onToggle, onClose } = useDisclosure();
 
@@ -59,13 +62,15 @@ export const Navbar = () => {
                 >
                   Tasks
                 </Button>
-                <Button
-                  aria-current={
-                    router.pathname === "/company" ? "page" : undefined
-                  }
-                >
-                  Company
-                </Button>
+                {user.isCompanyAdmin && (
+                  <Button
+                    aria-current={
+                      router.pathname === "/company" ? "page" : undefined
+                    }
+                  >
+                    Company
+                  </Button>
+                )}
               </ButtonGroup>
             )}
           </HStack>
