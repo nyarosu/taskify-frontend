@@ -67,8 +67,13 @@ export const Navbar = () => {
                     aria-current={
                       router.pathname === "/company" ? "page" : undefined
                     }
+                    onClick={() => {
+                      router.push("/organization", undefined, {
+                        shallow: true,
+                      });
+                    }}
                   >
-                    Company
+                    Organization
                   </Button>
                 )}
               </ButtonGroup>
