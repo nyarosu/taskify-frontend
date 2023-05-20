@@ -4,7 +4,7 @@ import { Box, Container, SlideFade } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "@/utils/redux_hooks";
 import { useRouter } from "next/router";
 import { API_URL } from "@/pages/_app";
-import { login } from "@/utils/store";
+import { createLoginAction, login } from "@/utils/store";
 
 interface LoggedInLayoutProps {
   children: ReactNode;
@@ -21,16 +21,7 @@ export default function LoggedInLayout({ children }: LoggedInLayoutProps) {
       router.push("/login", undefined, { shallow: true });
     }
     const data = await response.json();
-    dispatcher(
-      login({
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-        company: data.company_name,
-        companyId: data.company_id,
-        picture: data.picture,
-      })
-    );
+    dispatcher(createLoginAction(data));
   }
 
   // Logged in pages need to have a check to make sure user is authenticated

@@ -21,7 +21,7 @@ import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { useRouter } from "next/router";
 import { API_URL } from "../_app";
 import { useAppDispatch } from "@/utils/redux_hooks";
-import { login } from "@/utils/store";
+import { createLoginAction, login } from "@/utils/store";
 import { SignupModes } from "@/utils/SignupModes";
 
 const validationSchema = Yup.object().shape({
@@ -75,16 +75,7 @@ const IndividualSignup = () => {
 
     if (response.ok) {
       const json = await response.json();
-      dispatcher(
-        login({
-          first_name: json.first_name,
-          last_name: json.last_name,
-          email: json.email,
-          company: json.company_name,
-          companyId: json.company_id,
-          picture: "" /* TODO */,
-        })
-      );
+      dispatcher(createLoginAction(json));
       router.push("/dashboard", undefined, { shallow: true });
     } else if (response.status === 409) {
       setIsRegistering(false);

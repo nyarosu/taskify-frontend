@@ -21,7 +21,7 @@ import { useFormik } from "formik";
 import { API_URL } from "./_app";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { login } from "@/utils/store";
+import { createLoginAction, login } from "@/utils/store";
 import { useAppDispatch } from "@/utils/redux_hooks";
 import Head from "next/head";
 
@@ -62,16 +62,7 @@ const Login = () => {
     if (response.ok) {
       setLoginLoading(false);
       const json = await response.json();
-      dispatcher(
-        login({
-          first_name: json.first_name,
-          last_name: json.last_name,
-          email: json.email,
-          company: json.company_name,
-          companyId: json.company_id,
-          picture: /* TODO */ "",
-        })
-      );
+      dispatcher(createLoginAction(json));
       router.push("/dashboard", undefined, { shallow: true });
     } else {
       setLoginLoading(false);
@@ -90,6 +81,7 @@ const Login = () => {
           email: json.email,
           company: json.company_name,
           companyId: json.company_id,
+          isCompanyAdmin: json.is_company_admin,
           picture: /* TODO */ "",
         })
       );
