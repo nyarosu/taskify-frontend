@@ -21,4 +21,11 @@ async function postLogin({ queryKey }: any) {
     throw new Error("Authentication failed.");
   }
 }
-export { postLogin };
+
+async function signout() {
+  const response = await fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+}
+export { postLogin, signout };

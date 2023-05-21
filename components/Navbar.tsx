@@ -10,7 +10,13 @@ import {
   Flex,
   HStack,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   useBreakpointValue,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
@@ -19,6 +25,7 @@ import { Sidebar } from "./Sidebar";
 import { ToggleButton } from "./ToggleButton";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/utils/redux_hooks";
+import { signout } from "@/utils/queries";
 
 export const Navbar = () => {
   const router = useRouter();
@@ -95,11 +102,35 @@ export const Navbar = () => {
                   aria-label="Help Center"
                 />
               </ButtonGroup>
-              <Avatar
-                boxSize="10"
-                name="Christoph Winston"
-                src="https://tinyurl.com/yhkm2ek8"
-              />
+              <Menu>
+                <MenuButton
+                  py={2}
+                  transition="all 0.3s"
+                  _focus={{ boxShadow: "none" }}
+                >
+                  <Avatar
+                    boxSize="10"
+                    name={user.first_name ? user.first_name : "null"}
+                    src="https://tinyurl.com/yhkm2ek8"
+                  />
+                </MenuButton>
+                <MenuList
+                  bg={useColorModeValue("white", "gray.900")}
+                  borderColor={useColorModeValue("gray.200", "gray.700")}
+                >
+                  <MenuItem>Profile</MenuItem>
+                  <MenuItem>Settings</MenuItem>
+                  <MenuDivider />
+                  <MenuItem
+                    onClick={async () => {
+                      await signout();
+                      router.push("/");
+                    }}
+                  >
+                    Sign out
+                  </MenuItem>
+                </MenuList>
+              </Menu>
             </HStack>
           ) : (
             <>

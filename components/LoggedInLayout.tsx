@@ -19,6 +19,7 @@ export default function LoggedInLayout({ children }: LoggedInLayoutProps) {
     const response = await fetch(`${API_URL}/me`, { credentials: "include" });
     if (!response.ok) {
       router.push("/login", undefined, { shallow: true });
+      return;
     }
     const data = await response.json();
     dispatcher(createLoginAction(data));
