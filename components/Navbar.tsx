@@ -114,10 +114,7 @@ export const Navbar = () => {
                     src="https://tinyurl.com/yhkm2ek8"
                   />
                 </MenuButton>
-                <MenuList
-                  bg={useColorModeValue("white", "gray.900")}
-                  borderColor={useColorModeValue("gray.200", "gray.700")}
-                >
+                <MenuList bg={"white"} borderColor={"gray.200"}>
                   <MenuItem>Profile</MenuItem>
                   <MenuItem>Settings</MenuItem>
                   <MenuDivider />
