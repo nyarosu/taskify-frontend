@@ -23,7 +23,7 @@ async function postLogin({ queryKey }: any) {
 }
 
 async function signout() {
-  const response = await fetch(`${API_URL}/auth/logout`, {
+  await fetch(`${API_URL}/auth/logout`, {
     method: "POST",
     credentials: "include",
   });

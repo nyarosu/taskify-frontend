@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
 import { AiOutlinePlus } from "react-icons/ai";
+import { CgOrganisation } from "react-icons/cg";
 
 export const OrganizationPageHeader: React.FC<{ hasUsers: boolean }> = (
   props
@@ -23,11 +24,12 @@ export const OrganizationPageHeader: React.FC<{ hasUsers: boolean }> = (
       direction={{ base: "column", md: "row" }}
       justify="space-between"
     >
-      <Stack spacing="1">
+      <HStack spacing="3">
+        <CgOrganisation size="1.8rem" />
         <Heading size={{ base: "xs", md: "sm" }} fontWeight="medium">
-          Your organization
+          Organization
         </Heading>
-      </Stack>
+      </HStack>
       {props.hasUsers && (
         <HStack spacing="2.5rem">
           <InputGroup maxW={{ sm: "xs" }}>

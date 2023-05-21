@@ -13,14 +13,17 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Text,
   Select,
   Grid,
+  HStack,
 } from "@chakra-ui/react";
 import Rocket from "../public/rocket.png";
 import { Formik, Form, Field } from "formik";
 import { useState } from "react";
 import { StaticImageData } from "next/image";
 import Image from "next/image";
+import { AiOutlinePlus } from "react-icons/ai";
 
 const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   props
@@ -43,10 +46,19 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
 
   return (
     <>
-      <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <Modal
+        isOpen={props.isOpen}
+        onClose={props.onClose}
+        preserveScrollBarGap={true}
+      >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>New project</ModalHeader>
+          <ModalHeader>
+            <HStack>
+              <AiOutlinePlus />
+              <Text>Create a project</Text>
+            </HStack>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Formik

@@ -15,6 +15,7 @@ import CompanyUsersTable from "@/components/OrganizationUsersTable";
 import NoUsersInCompanyMessage from "@/components/NoUsersInOrganizationMessage";
 import OrganizationUsersTable from "@/components/OrganizationUsersTable";
 import NoUsersInOrganizationMessage from "@/components/NoUsersInOrganizationMessage";
+import InviteUserModal from "@/components/InviteUserModal";
 
 const Organization = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,9 +25,10 @@ const Organization = () => {
       <Head>
         <title>Taskify | Organization</title>
       </Head>
+      <InviteUserModal isOpen={isOpen} onClose={onClose} />
       <SlideFade in={true}>
         <OrganizationPageHeader hasUsers={false} />
-        <Box overflowX="auto" marginTop={"2rem"}>
+        <Box overflowX="auto" marginTop={"2rem"} position="relative" zIndex={1}>
           {hasUsers ? (
             <OrganizationUsersTable />
           ) : (

@@ -12,7 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineFundProjectionScreen, AiOutlinePlus } from "react-icons/ai";
 
 export const ProjectsPageHeader: React.FC<{ hasProjects: boolean }> = (
   props
@@ -23,11 +23,12 @@ export const ProjectsPageHeader: React.FC<{ hasProjects: boolean }> = (
       direction={{ base: "column", md: "row" }}
       justify="space-between"
     >
-      <Stack spacing="1">
+      <HStack spacing="3">
+        <AiOutlineFundProjectionScreen size="1.8rem" />
         <Heading size={{ base: "xs", md: "sm" }} fontWeight="medium">
           Projects
         </Heading>
-      </Stack>
+      </HStack>
       {props.hasProjects && (
         <HStack spacing="2.5rem">
           <InputGroup maxW={{ sm: "xs" }}>

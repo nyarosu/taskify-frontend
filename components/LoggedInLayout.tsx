@@ -34,7 +34,7 @@ export default function LoggedInLayout({ children }: LoggedInLayoutProps) {
     <>
       <Navbar />
       <SlideFade in={true}>
-        <Box as="section" height="100vh" overflowY="auto">
+        <Box as="section" height="100vh" overflowY="auto" overflowX="auto">
           <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>
             {children}
           </Container>
