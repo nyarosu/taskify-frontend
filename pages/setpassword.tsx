@@ -61,11 +61,12 @@ const SetPassword = () => {
     setRegisterError(false);
     console.log(values);
     const response = await fetch(`${API_URL}/user/password`, {
-      method: "PUT",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("checkpoint_token")}`,
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(values),
     });
     if (response.status === 200) {
