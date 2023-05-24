@@ -14,6 +14,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import Head from "next/head";
 import { Logo } from "@/components/Logo";
 import IndexPageNavbar from "@/components/IndexPageNavbar";
 import { useRouter } from "next/router";
@@ -93,7 +94,9 @@ const SignupAsOrganization = () => {
   return (
     <>
       <IndexPageNavbar />
-
+      <Head>
+        <title>Taskify | Sign up</title>
+      </Head>
       <Container maxW="md" py={{ base: "12", md: "24" }}>
         <Stack spacing="8">
           <Stack spacing="6" align="center">

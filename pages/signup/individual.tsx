@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Head from "next/head";
 import {
   Alert,
   AlertIcon,
@@ -91,7 +92,9 @@ const IndividualSignup = () => {
   return (
     <>
       <IndexPageNavbar />
-
+      <Head>
+        <title>Taskify | Sign up</title>
+      </Head>
       <Container maxW="md" py={{ base: "12", md: "24" }}>
         <Stack spacing="8">
           <Stack spacing="6" align="center">

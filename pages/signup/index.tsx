@@ -55,7 +55,9 @@ const Signup = () => {
                 variant="primary"
                 iconSpacing="3"
                 leftIcon={<BsBuildingFillAdd />}
-                onClick={() => {}}
+                onClick={() => {
+                  router.push("/verify", undefined, { shallow: true });
+                }}
               >
                 Join an existing organization
               </Button>
