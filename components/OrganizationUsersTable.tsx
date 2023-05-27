@@ -1,3 +1,5 @@
+import { useAppSelector } from "@/utils/redux_hooks";
+import { userSlice } from "@/utils/store";
 import {
   Avatar,
   Badge,
@@ -25,6 +27,11 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const color = useColorModeValue("gray.800", "gray.200");
   const hoverColor = useColorModeValue("gray.100", "gray.800");
+  const currentUser = useAppSelector((state) => state.user);
+
+  const activeUsers = props.users.filter((user) => {
+    user.email !== currentUser.email;
+  });
 
   return (
     <Table
@@ -49,7 +56,7 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
         </Tr>
       </Thead>
       <Tbody>
-        {props.users.map((user) => (
+        {activeUsers.map((user) => (
           <Tr key={user.email} _hover={{ backgroundColor: hoverColor }}>
             <Td>
               <HStack spacing="3">

@@ -1,12 +1,11 @@
 import { Heading, Button, Box, Text, Fade } from "@chakra-ui/react";
-
 import { BsFillPersonPlusFill } from "react-icons/bs";
 
 const NoUsersInOrganizationMessage: React.FC<{ openModal: () => void }> = (
   props
 ) => {
   return (
-    <Box p={4} borderRadius="md" textAlign="center" boxShadow="md">
+    <Box p={8} borderRadius="md" textAlign="center">
       <Heading as="h2" size="md" mb={2}>
         No users in your organization.
       </Heading>

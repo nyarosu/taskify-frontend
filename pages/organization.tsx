@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUsersForOrganization } from "@/utils/queries";
 import LoggedInLayout from "@/components/LoggedInLayout";
 import PendingUsersList from "@/components/PendingUsersList";
+import { useAppSelector } from "@/utils/redux_hooks";
 
 const Organization = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,7 +30,12 @@ const Organization = () => {
     data: users,
   } = useQuery({ queryKey: ["users"], queryFn: getUsersForOrganization });
 
-  const hasUsers = !isLoading && !isError && users.active.length > 0;
+  const currentUser = useAppSelector((state) => state.user);
+
+  const hasUsers =
+    !isLoading &&
+    !isError &&
+    users.active.filter((user) => user.email !== currentUser.email).length > 0;
   const pendingCount = !isLoading && !isError && users.pending.length;
 
   return (
@@ -39,7 +45,7 @@ const Organization = () => {
       </Head>
       <InviteUserModal isOpen={isOpen} onClose={onClose} />
       <SlideFade in={true}>
-        <OrganizationPageHeader hasUsers openModal={onOpen} />
+        <OrganizationPageHeader hasUsers={hasUsers} openModal={onOpen} />
         <Flex direction="column" align="center">
           <Tabs
             top="2rem"
