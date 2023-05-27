@@ -33,9 +33,6 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
     return user.email !== currentUser.email;
   });
 
-  console.log(props.users);
-  console.log(activeUsers);
-
   return (
     <Table
       variant="unstyled"
