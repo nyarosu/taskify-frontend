@@ -1,17 +1,17 @@
 import {
   Avatar,
+  Badge,
   Box,
-  Checkbox,
-  Fade,
-  HStack,
   Table,
   Tbody,
   Td,
   Text,
+  Th,
   Thead,
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { FaSpinner } from "react-icons/fa";
 
 const PendingUsersList: React.FC<{ users: OrganizationUser[] }> = (props) => {
   const bgColor = useColorModeValue("gray.50", "gray.900");
@@ -27,28 +27,28 @@ const PendingUsersList: React.FC<{ users: OrganizationUser[] }> = (props) => {
     >
       <Thead bgColor={bgColor} color={color}>
         <Tr>
-          <Td fontWeight="bold">Name</Td>
-          <Td fontWeight="bold">Role</Td>
-          <Td fontWeight="bold">Email</Td>
-          <Td fontWeight="bold">Status</Td>
+          <Th>
+            <Text fontWeight="bold">Name</Text>
+          </Th>
+          <Th fontWeight="bold">Role</Th>
+          <Th fontWeight="bold">Email</Th>
+          <Th fontWeight="bold">Status</Th>
         </Tr>
       </Thead>
       <Tbody>
         {props.users.map((user) => (
           <Tr key={user.email} _hover={{ backgroundColor: hoverColor }}>
             <Td>
-              <HStack spacing="3">
+              <Box display="flex" alignItems="center">
                 <Avatar
                   name={user.first_name + " " + user.last_name}
                   src={user.picture ? user.picture : ""}
                   boxSize="10"
                 />
-                <Box>
-                  <Text fontWeight="medium">
-                    {user.first_name + " " + user.last_name}
-                  </Text>
-                </Box>
-              </HStack>
+                <Text fontWeight="medium" marginLeft="3">
+                  {user.first_name + " " + user.last_name}
+                </Text>
+              </Box>
             </Td>
             <Td>
               <Text>{user.role}</Text>
@@ -57,7 +57,11 @@ const PendingUsersList: React.FC<{ users: OrganizationUser[] }> = (props) => {
               <Text>{user.email}</Text>
             </Td>
             <Td>
-              <Text color="gray.500">Pending Invitation</Text>
+              <Box display="flex" alignItems="center">
+                <Badge colorScheme="blue" fontWeight="bold">
+                  Pending
+                </Badge>
+              </Box>
             </Td>
           </Tr>
         ))}

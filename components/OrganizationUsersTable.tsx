@@ -45,7 +45,7 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
           </Th>
           <Th fontWeight="bold">Role</Th>
           <Th fontWeight="bold">Email</Th>
-          <Th></Th>
+          <Th fontWeight="bold">Actions</Th>
         </Tr>
       </Thead>
       <Tbody>
