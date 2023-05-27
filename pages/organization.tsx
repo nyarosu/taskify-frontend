@@ -1,25 +1,37 @@
-import LoggedInLayout from "@/components/LoggedInLayout";
 import {
   Box,
-  Button,
-  Heading,
-  SlideFade,
-  Text,
   useDisclosure,
+  Tab,
+  TabList,
+  Tabs,
+  Flex,
+  Skeleton,
+  TabPanels,
+  TabPanel,
+  SlideFade,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { ReactElement } from "react";
 import { OrganizationPageHeader } from "@/components/OrganizationPageHeader";
-import { AiOutlinePlus } from "react-icons/ai";
-import CompanyUsersTable from "@/components/OrganizationUsersTable";
-import NoUsersInCompanyMessage from "@/components/NoUsersInOrganizationMessage";
 import OrganizationUsersTable from "@/components/OrganizationUsersTable";
 import NoUsersInOrganizationMessage from "@/components/NoUsersInOrganizationMessage";
 import InviteUserModal from "@/components/InviteUserModal";
+import { useQuery } from "@tanstack/react-query";
+import { getUsersForOrganization } from "@/utils/queries";
+import LoggedInLayout from "@/components/LoggedInLayout";
+import PendingUsersList from "@/components/PendingUsersList";
 
 const Organization = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const hasUsers = false;
+  const {
+    isLoading,
+    isError,
+    data: users,
+  } = useQuery({ queryKey: ["users"], queryFn: getUsersForOrganization });
+
+  const hasUsers = !isLoading && !isError && users.active.length > 0;
+  const pendingCount = !isLoading && !isError && users.pending.length;
+
   return (
     <>
       <Head>
@@ -27,14 +39,40 @@ const Organization = () => {
       </Head>
       <InviteUserModal isOpen={isOpen} onClose={onClose} />
       <SlideFade in={true}>
-        <OrganizationPageHeader hasUsers={false} />
-        <Box overflowX="auto" marginTop={"2rem"} position="relative" zIndex={1}>
-          {hasUsers ? (
-            <OrganizationUsersTable />
-          ) : (
-            <NoUsersInOrganizationMessage openModal={onOpen} />
-          )}
-        </Box>
+        <OrganizationPageHeader hasUsers openModal={onOpen} />
+        <Flex direction="column" align="center">
+          <Tabs
+            top="2rem"
+            left="1.8rem"
+            marginBottom="2rem"
+            position="relative"
+            alignSelf="flex-start"
+            size={"lg"}
+            variant="with-line"
+            width="100%"
+          >
+            <TabList>
+              <Tab>Active</Tab>
+              <Tab isDisabled={pendingCount === 0 || isLoading || isError}>
+                Pending ({!isLoading && !isError ? pendingCount : 0})
+              </Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Skeleton isLoaded={!isLoading && !isError}>
+                  {hasUsers ? (
+                    <OrganizationUsersTable users={users ? users.active : []} />
+                  ) : (
+                    <NoUsersInOrganizationMessage openModal={onOpen} />
+                  )}
+                </Skeleton>
+              </TabPanel>
+              <TabPanel>
+                <PendingUsersList users={users ? users.pending : []} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Flex>
       </SlideFade>
     </>
   );

@@ -25,14 +25,31 @@ import * as Yup from "yup";
 import { MdPerson } from "react-icons/md";
 import { BsFillPersonPlusFill } from "react-icons/bs";
 import { API_URL } from "@/pages/_app";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { inviteUserToOrganization } from "@/utils/queries";
 
 const InviteUserModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen,
   onClose,
 }) => {
   const [selectedRole, setSelectedRole] = useState("");
-  const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const queryClient = useQueryClient();
+  const inviteUserMutation = useMutation({
+    mutationFn: inviteUserToOrganization,
+    onSuccess: (data, variables) => {
+      // Update cache with newly invited user
+      const currentUsers = queryClient.getQueryData<OrganizationUserData>([
+        "users",
+      ]);
+      if (currentUsers) {
+        queryClient.setQueryData(["users"], {
+          active: currentUsers.active,
+          pending: [...currentUsers.pending, data],
+        });
+      }
+    },
+  });
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
@@ -51,46 +68,9 @@ const InviteUserModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
     email: string;
     role: string;
   }) => {
-    setLoading(true);
+    try {
+      await inviteUserMutation.mutateAsync(values);
 
-    const response = await fetch(`${API_URL}/company/invite`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        first_name: values.firstName,
-        last_name: values.lastName,
-        email: values.email,
-        role: values.role,
-      }),
-    });
-
-    setLoading(false);
-
-    if (!response.ok) {
-      if (response.status === 409) {
-        toast({
-          title: "An error occurred.",
-          position: "top",
-          description:
-            "The user you're trying to invite already has an account with this email.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: "An error occurred.",
-          position: "top",
-          description: "An unknown error occurred. Please try again later.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      }
-    } else {
       toast({
         title: "Invite sent!",
         position: "top",
@@ -100,9 +80,22 @@ const InviteUserModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         duration: 3000,
         isClosable: true,
       });
-    }
 
-    onClose();
+      onClose();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "An error occured.",
+          position: "top",
+          description: error.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      onClose();
+      return;
+    }
   };
 
   return (
@@ -195,7 +188,11 @@ const InviteUserModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                   <Button variant="ghost" mr={3} onClick={onClose}>
                     Close
                   </Button>
-                  <Button colorScheme="blue" type="submit" isLoading={loading}>
+                  <Button
+                    colorScheme="blue"
+                    type="submit"
+                    isLoading={inviteUserMutation.isLoading}
+                  >
                     Invite User
                   </Button>
                 </ModalFooter>

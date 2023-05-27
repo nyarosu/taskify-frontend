@@ -28,4 +28,56 @@ async function signout() {
     credentials: "include",
   });
 }
-export { postLogin, signout };
+
+async function getUsersForOrganization(): Promise<OrganizationUserData> {
+  const response = await fetch(`${API_URL}/company/users`, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error("An error occured.");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+async function inviteUserToOrganization(values: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}): Promise<OrganizationUser> {
+  const response = await fetch(`${API_URL}/company/invite`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      first_name: values.firstName,
+      last_name: values.lastName,
+      email: values.email,
+      role: values.role,
+    }),
+  });
+
+  if (response.ok) {
+    const invitedUser = response.json();
+    return invitedUser;
+  }
+
+  if (response.status === 409) {
+    throw new Error(
+      "The user you're trying to invite already has an account with this email."
+    );
+  } else {
+    throw new Error("An unknown error occured. Please try again later.");
+  }
+}
+export {
+  postLogin,
+  signout,
+  getUsersForOrganization,
+  inviteUserToOrganization,
+};

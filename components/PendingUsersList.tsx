@@ -1,27 +1,19 @@
 import {
   Avatar,
-  Badge,
   Box,
   Checkbox,
   Fade,
   HStack,
-  Icon,
-  IconButton,
   Table,
   Tbody,
   Td,
   Text,
-  Th,
   Thead,
   Tr,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FiTrash2, FiEdit2 } from "react-icons/fi";
-import { IoArrowDown } from "react-icons/io5";
 
-const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
-  props
-) => {
+const PendingUsersList: React.FC<{ users: OrganizationUser[] }> = (props) => {
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const color = useColorModeValue("gray.800", "gray.200");
   const hoverColor = useColorModeValue("gray.100", "gray.800");
@@ -35,17 +27,10 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
     >
       <Thead bgColor={bgColor} color={color}>
         <Tr>
-          <Th>
-            <HStack spacing="3">
-              <HStack spacing="1">
-                <Text fontWeight="bold">Name</Text>
-                <Icon as={IoArrowDown} color="muted" boxSize="4" />
-              </HStack>
-            </HStack>
-          </Th>
-          <Th fontWeight="bold">Role</Th>
-          <Th fontWeight="bold">Email</Th>
-          <Th></Th>
+          <Td fontWeight="bold">Name</Td>
+          <Td fontWeight="bold">Role</Td>
+          <Td fontWeight="bold">Email</Td>
+          <Td fontWeight="bold">Status</Td>
         </Tr>
       </Thead>
       <Tbody>
@@ -54,7 +39,7 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
             <Td>
               <HStack spacing="3">
                 <Avatar
-                  name={user.first_name}
+                  name={user.first_name + " " + user.last_name}
                   src={user.picture ? user.picture : ""}
                   boxSize="10"
                 />
@@ -72,18 +57,7 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
               <Text>{user.email}</Text>
             </Td>
             <Td>
-              <HStack spacing="1">
-                <IconButton
-                  icon={<FiTrash2 fontSize="1.25rem" />}
-                  variant="ghost"
-                  aria-label="Delete member"
-                />
-                <IconButton
-                  icon={<FiEdit2 fontSize="1.25rem" />}
-                  variant="ghost"
-                  aria-label="Edit member"
-                />
-              </HStack>
+              <Text color="gray.500">Pending Invitation</Text>
             </Td>
           </Tr>
         ))}
@@ -92,4 +66,4 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
   );
 };
 
-export default OrganizationUsersTable;
+export default PendingUsersList;

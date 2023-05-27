@@ -25,10 +25,11 @@ const Verify = () => {
   const [isInvalid, setIsInvalid] = useState(false);
   const toast = useToast();
   const router = useRouter();
+
   // Automatically convert to uppercase
   const handleInputChange = (event: any, inputIndex: any) => {
     setIsInvalid(false);
-    const inputValue = event.target.value;
+    const inputValue = event.target.value.replace(/-/g, "");
     const uppercaseValue = inputValue.toUpperCase();
     event.target.value = uppercaseValue;
   };

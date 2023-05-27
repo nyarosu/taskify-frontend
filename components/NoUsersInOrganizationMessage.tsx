@@ -1,4 +1,4 @@
-import { Heading, Button, Box, Text } from "@chakra-ui/react";
+import { Heading, Button, Box, Text, Fade } from "@chakra-ui/react";
 
 import { BsFillPersonPlusFill } from "react-icons/bs";
 

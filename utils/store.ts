@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { NullLiteral } from "typescript";
 
-interface User {
+interface LoggedInUser {
   first_name: string | null;
   last_name: string | null;
   email: string | null;
@@ -16,7 +16,7 @@ interface User {
   picture: string | null;
 }
 
-const initialUserState: User = {
+const initialUserState: LoggedInUser = {
   first_name: null,
   last_name: null,
   email: null,
@@ -30,7 +30,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
-    login: (state: any, action: PayloadAction<User>) => {
+    login: (state: any, action: PayloadAction<LoggedInUser>) => {
       return action.payload;
     },
     logout: (state: any) => {
@@ -46,7 +46,7 @@ export const globalstore = configureStore({
 });
 
 export const createLoginAction: (res: any) => {
-  payload: User;
+  payload: LoggedInUser;
   type: "user/login";
 } = (http_response: any) => {
   return login({

@@ -14,10 +14,12 @@ import {
 import { FiSearch } from "react-icons/fi";
 import { AiOutlinePlus } from "react-icons/ai";
 import { CgOrganisation } from "react-icons/cg";
+import { BsFillPersonPlusFill } from "react-icons/bs";
 
-export const OrganizationPageHeader: React.FC<{ hasUsers: boolean }> = (
-  props
-) => (
+export const OrganizationPageHeader: React.FC<{
+  hasUsers: boolean;
+  openModal: () => void;
+}> = (props) => (
   <Container>
     <Stack
       spacing="4"
@@ -38,7 +40,12 @@ export const OrganizationPageHeader: React.FC<{ hasUsers: boolean }> = (
             </InputLeftElement>
             <Input placeholder="Search" />
           </InputGroup>
-          <Button variant="primary" leftIcon={<AiOutlinePlus />} width="6rem">
+          <Button
+            variant="primary"
+            leftIcon={<BsFillPersonPlusFill />}
+            width="12rem"
+            onClick={props.openModal}
+          >
             Add a user
           </Button>
         </HStack>
