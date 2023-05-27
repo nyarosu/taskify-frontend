@@ -30,8 +30,11 @@ const OrganizationUsersTable: React.FC<{ users: OrganizationUser[] }> = (
   const currentUser = useAppSelector((state) => state.user);
 
   const activeUsers = props.users.filter((user) => {
-    user.email !== currentUser.email;
+    return user.email !== currentUser.email;
   });
+
+  console.log(props.users);
+  console.log(activeUsers);
 
   return (
     <Table
