@@ -67,7 +67,6 @@ const SignupAsOrganization = () => {
       credentials: "include",
       method: "POST",
       body: JSON.stringify({
-        mode: SignupModes.Organization,
         first_name: values.firstName,
         last_name: values.lastName,
         email: values.email,

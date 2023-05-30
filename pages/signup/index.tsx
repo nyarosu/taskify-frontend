@@ -51,6 +51,7 @@ const Signup = () => {
               >
                 Sign up as an organization
               </Button>
+              <Divider />
               <Button
                 variant="primary"
                 iconSpacing="3"
@@ -60,18 +61,6 @@ const Signup = () => {
                 }}
               >
                 Join an existing organization
-              </Button>
-              <Divider />
-              <Button
-                variant="secondary"
-                leftIcon={<BsFillPersonFill />}
-                onClick={() => {
-                  router.push("/signup/individual", undefined, {
-                    shallow: true,
-                  });
-                }}
-              >
-                Sign up as an individual user
               </Button>
             </Stack>
             <HStack alignSelf="center">

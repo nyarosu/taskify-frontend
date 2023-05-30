@@ -12,8 +12,14 @@ interface LoggedInUser {
   email: string | null;
   company: string | null;
   companyId: number | null;
+  type: UserType;
   isCompanyAdmin: boolean | null;
   picture: string | null;
+}
+
+export enum UserType {
+  OrganizationMember,
+  OrganizationAdmin,
 }
 
 const initialUserState: LoggedInUser = {
@@ -22,6 +28,7 @@ const initialUserState: LoggedInUser = {
   email: null,
   company: null,
   companyId: null,
+  type: UserType.OrganizationMember,
   isCompanyAdmin: null,
   picture: null,
 };
@@ -45,6 +52,14 @@ export const globalstore = configureStore({
   },
 });
 
+function parseUserTypeFromLoginResponse(http_response: any): UserType {
+  if (http_response.is_company_admin) {
+    return UserType.OrganizationAdmin;
+  } else {
+    return UserType.OrganizationMember;
+  }
+}
+
 export const createLoginAction: (res: any) => {
   payload: LoggedInUser;
   type: "user/login";
@@ -55,6 +70,7 @@ export const createLoginAction: (res: any) => {
     email: http_response.email,
     company: http_response.company_name,
     companyId: http_response.company_id,
+    type: parseUserTypeFromLoginResponse(http_response),
     isCompanyAdmin: http_response.is_company_admin,
     picture: http_response.picture,
   });

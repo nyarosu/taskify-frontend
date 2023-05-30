@@ -34,10 +34,13 @@ import { Autocomplete } from "./Autocomplete";
 import { Item, useAsyncList } from "react-stately";
 import { API_URL } from "@/pages/_app";
 import ProjectLeadSuggestion from "./ProjectLeadSuggestion";
+import { useAppSelector } from "@/utils/redux_hooks";
+import { UserType } from "@/utils/store";
 
 const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   props
 ) => {
+  const user = useAppSelector((state) => state.user);
   const [projectCoverImage, setProjectCoverImage] = useState<StaticImageData>();
   const [projectCoverImageName, setProjectCoverImageName] = useState<string>();
   const [selectedProjectLead, setSelectedProjectLead] = useState<string>();
@@ -45,7 +48,7 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
 
   const closeModal = props.onClose;
   const createProject = (values: any) => {
-    if (!selectedProjectLead) {
+    if (!selectedProjectLead && user.type === UserType.OrganizationAdmin) {
       setProjectLeadIsInvalid(true);
       return;
     } else {
@@ -143,28 +146,30 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
                       <FormLabel>Project Description</FormLabel>
                       <Field as={Textarea} name="projectDescription" required />
                     </FormControl>
-                    <FormControl mb={4}>
-                      <FormLabel>Project Lead</FormLabel>
-                      <Autocomplete
-                        isInvalid={projectLeadIsInvalid}
-                        items={list.items}
-                        isRequired={true}
-                        inputValue={list.filterText}
-                        onInputChange={list.setFilterText}
-                        loadingState={list.loadingState}
-                        onLoadMore={list.loadMore}
-                        onSelectionChange={(key) => {
-                          setProjectLead(key ? key.toString() : undefined);
-                        }}
-                        placeholder="Search by name, role or email"
-                      >
-                        {(item) => (
-                          <Item key={item.email} textValue={item.full_name}>
-                            <ProjectLeadSuggestion user={item} />
-                          </Item>
-                        )}
-                      </Autocomplete>
-                    </FormControl>
+                    {user.type === UserType.OrganizationAdmin && (
+                      <FormControl mb={4}>
+                        <FormLabel>Project Lead</FormLabel>
+                        <Autocomplete
+                          isInvalid={projectLeadIsInvalid}
+                          items={list.items}
+                          isRequired={user.type === UserType.OrganizationAdmin}
+                          inputValue={list.filterText}
+                          onInputChange={list.setFilterText}
+                          loadingState={list.loadingState}
+                          onLoadMore={list.loadMore}
+                          onSelectionChange={(key) => {
+                            setProjectLead(key ? key.toString() : undefined);
+                          }}
+                          placeholder="Search by name, role or email"
+                        >
+                          {(item) => (
+                            <Item key={item.email} textValue={item.full_name}>
+                              <ProjectLeadSuggestion user={item} />
+                            </Item>
+                          )}
+                        </Autocomplete>
+                      </FormControl>
+                    )}
                     <FormControl mb={4}>
                       <FormLabel mb={3}>Cover Image (optional)</FormLabel>
                       <Grid templateColumns="repeat(3, 1fr)" gap={4}>
