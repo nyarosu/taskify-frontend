@@ -109,9 +109,10 @@ export const Navbar = () => {
                   _focus={{ boxShadow: "none" }}
                 >
                   <Avatar
-                    boxSize="10"
-                    name={user.first_name ? user.first_name : "null"}
-                    src="https://tinyurl.com/yhkm2ek8"
+                    borderRadius="full"
+                    boxSize="40px"
+                    src={""}
+                    name={user.first_name + " " + user.last_name}
                   />
                 </MenuButton>
                 <MenuList bg={"white"} borderColor={"gray.200"}>

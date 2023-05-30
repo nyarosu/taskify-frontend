@@ -19,30 +19,92 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import Rocket from "../public/rocket.png";
+import Blueprint from "../public/blueprint.png";
+import Compass from "../public/compass.png";
+import Lighthouse from "../public/lighthouse.png";
+import Dartboard from "../public/dartboard.png";
+import Telescope from "../public/telescope.png";
+
 import { Formik, Form, Field } from "formik";
 import { useState } from "react";
 import { StaticImageData } from "next/image";
 import Image from "next/image";
 import { AiOutlinePlus } from "react-icons/ai";
+import { Autocomplete } from "./Autocomplete";
+import { Item, useAsyncList } from "react-stately";
+import { API_URL } from "@/pages/_app";
+import ProjectLeadSuggestion from "./ProjectLeadSuggestion";
 
 const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   props
 ) => {
   const [projectCoverImage, setProjectCoverImage] = useState<StaticImageData>();
+  const [projectCoverImageName, setProjectCoverImageName] = useState<string>();
+  const [selectedProjectLead, setSelectedProjectLead] = useState<string>();
+  const [projectLeadIsInvalid, setProjectLeadIsInvalid] = useState(false);
 
-  const handleSubmit = (values: any) => {
-    console.log("Form Values:", values);
-
+  const closeModal = props.onClose;
+  const createProject = (values: any) => {
+    if (!selectedProjectLead) {
+      setProjectLeadIsInvalid(true);
+      return;
+    } else {
+      values.projectLead = selectedProjectLead;
+    }
+    values.projectCoverImage = projectCoverImageName;
+    setSelectedProjectLead(undefined);
+    setProjectCoverImage(undefined);
+    setProjectCoverImageName(undefined);
     props.onClose();
   };
 
-  const handleImageChange = (image: StaticImageData) => {
-    setProjectCoverImage(image);
+  const setProjectLead = (projectLead: string | undefined) => {
+    setProjectLeadIsInvalid(false);
+    setSelectedProjectLead(projectLead);
   };
 
-  const coverImages = [Rocket];
+  const handleImageChange = (name: string, image: StaticImageData) => {
+    setProjectCoverImage(image);
+    setProjectCoverImageName(name);
+  };
 
-  const projectLeadSuggestions = ["John Doe", "Jane Smith", "Alice Johnson"];
+  // Options for cover images
+  const coverImages = new Map<string, StaticImageData>();
+  coverImages.set("Rocket", Rocket);
+  coverImages.set("Blueprint", Blueprint);
+  coverImages.set("Compass", Compass);
+  coverImages.set("Lighthouse", Lighthouse);
+  coverImages.set("Dartboard", Dartboard);
+  coverImages.set("Telescope", Telescope);
+
+  interface ProjectLeadSuggestion {
+    full_name: string;
+    email: string;
+    role: string;
+  }
+
+  let list = useAsyncList<ProjectLeadSuggestion>({
+    async load({ signal, cursor, filterText }) {
+      let res = await fetch(
+        `${API_URL}/company/users/search?query=${encodeURIComponent(
+          filterText ? filterText : ""
+        )}${cursor ? `&cursor=${cursor}` : ""}`,
+        { signal, credentials: "include" }
+      );
+      if (res.ok) {
+        let json = await res.json();
+        return {
+          items: json.results,
+          cursor: json.next,
+        };
+      } else {
+        return {
+          items: [],
+          cursor: null,
+        };
+      }
+    },
+  });
 
   return (
     <>
@@ -52,35 +114,30 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
         preserveScrollBarGap={true}
       >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            <HStack>
-              <AiOutlinePlus />
-              <Text>Create a project</Text>
-            </HStack>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Formik
-              initialValues={{
-                projectName: "",
-                projectKey: "",
-                projectDescription: "",
-                projectLead: "",
-                projectCoverImage: "",
-              }}
-              onSubmit={handleSubmit}
-            >
-              {({ values }) => (
-                <Form>
+        <Formik
+          initialValues={{
+            projectName: "",
+            projectDescription: "",
+            projectLead: "",
+            projectCoverImage: "",
+          }}
+          onSubmit={createProject}
+        >
+          {(props) => (
+            <Form>
+              <ModalContent>
+                <ModalHeader>
+                  <HStack>
+                    <AiOutlinePlus />
+                    <Text>Create a project</Text>
+                  </HStack>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
                   <Box>
                     <FormControl mb={4}>
                       <FormLabel>Project Name</FormLabel>
                       <Field as={Input} name="projectName" required />
-                    </FormControl>
-                    <FormControl mb={4}>
-                      <FormLabel>Project Key</FormLabel>
-                      <Field as={Input} name="projectKey" required />
                     </FormControl>
                     <FormControl mb={4}>
                       <FormLabel>Project Description</FormLabel>
@@ -88,15 +145,33 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
                     </FormControl>
                     <FormControl mb={4}>
                       <FormLabel>Project Lead</FormLabel>
-                      <Field as={Input} name="projectLead" required />
+                      <Autocomplete
+                        isInvalid={projectLeadIsInvalid}
+                        items={list.items}
+                        isRequired={true}
+                        inputValue={list.filterText}
+                        onInputChange={list.setFilterText}
+                        loadingState={list.loadingState}
+                        onLoadMore={list.loadMore}
+                        onSelectionChange={(key) => {
+                          setProjectLead(key ? key.toString() : undefined);
+                        }}
+                        placeholder="Search by name, role or email"
+                      >
+                        {(item) => (
+                          <Item key={item.email} textValue={item.full_name}>
+                            <ProjectLeadSuggestion user={item} />
+                          </Item>
+                        )}
+                      </Autocomplete>
                     </FormControl>
                     <FormControl mb={4}>
-                      <FormLabel>Cover Image</FormLabel>
+                      <FormLabel mb={3}>Cover Image (optional)</FormLabel>
                       <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-                        {coverImages.map((image, index) => (
+                        {Array.from(coverImages).map(([name, image]) => (
                           <Box
-                            key={index}
-                            onClick={() => handleImageChange(image)}
+                            key={name}
+                            onClick={() => handleImageChange(name, image)}
                             cursor="pointer"
                             borderWidth={2}
                             borderColor={
@@ -109,7 +184,7 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
                           >
                             <Image
                               src={image}
-                              alt={`Image ${index + 1}`}
+                              alt={`${name}`}
                               objectFit="cover"
                             />
                           </Box>
@@ -117,18 +192,20 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
                       </Grid>
                     </FormControl>
                   </Box>
-                </Form>
-              )}
-            </Formik>
-          </ModalBody>
+                </ModalBody>
 
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={props.onClose}>
-              Close
-            </Button>
-            <Button colorScheme="blue">Create</Button>
-          </ModalFooter>
-        </ModalContent>
+                <ModalFooter>
+                  <Button variant="ghost" mr={3} onClick={closeModal}>
+                    Close
+                  </Button>
+                  <Button colorScheme="blue" type="submit">
+                    Create
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

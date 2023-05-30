@@ -11,7 +11,7 @@ import {
   SlideFade,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import { ReactElement } from "react";
+import { ChangeEventHandler, ReactElement, useState } from "react";
 import { OrganizationPageHeader } from "@/components/OrganizationPageHeader";
 import OrganizationUsersTable from "@/components/OrganizationUsersTable";
 import NoUsersInOrganizationMessage from "@/components/NoUsersInOrganizationMessage";
@@ -38,6 +38,11 @@ const Organization = () => {
     users.active.filter((user) => user.email !== currentUser.email).length > 0;
   const pendingCount = !isLoading && !isError && users.pending.length;
 
+  const [searchString, setSearchString] = useState("");
+  const setSearchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(event.target.value);
+  };
+
   return (
     <>
       <Head>
@@ -45,7 +50,11 @@ const Organization = () => {
       </Head>
       <InviteUserModal isOpen={isOpen} onClose={onClose} />
       <SlideFade in={true}>
-        <OrganizationPageHeader hasUsers={hasUsers} openModal={onOpen} />
+        <OrganizationPageHeader
+          hasUsers={hasUsers}
+          openModal={onOpen}
+          setSearchQuery={setSearchQuery}
+        />
         <Flex direction="column" align="center">
           <Tabs
             top="2rem"

@@ -15,12 +15,13 @@ import { FiSearch } from "react-icons/fi";
 import { AiOutlinePlus } from "react-icons/ai";
 import { CgOrganisation } from "react-icons/cg";
 import { BsFillPersonPlusFill } from "react-icons/bs";
+import React from "react";
 
 export const OrganizationPageHeader: React.FC<{
   hasUsers: boolean;
   openModal: () => void;
+  setSearchQuery: (queryEvent: React.ChangeEvent<HTMLInputElement>) => void;
 }> = (props) => {
-  console.log(props.hasUsers);
   return (
     <Container>
       <Stack
@@ -35,12 +36,16 @@ export const OrganizationPageHeader: React.FC<{
           </Heading>
         </HStack>
         {props.hasUsers && (
-          <HStack spacing="2.5rem">
+          <HStack spacing="0.5rem" position="relative" top="0.2rem">
             <InputGroup maxW={{ sm: "xs" }}>
               <InputLeftElement pointerEvents="none">
                 <Icon as={FiSearch} color="muted" boxSize="5" />
               </InputLeftElement>
-              <Input placeholder="Search" />
+              <Input
+                placeholder="Search"
+                width="15rem"
+                onChange={props.setSearchQuery}
+              />
             </InputGroup>
             <Button
               variant="primary"

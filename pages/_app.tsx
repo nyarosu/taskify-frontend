@@ -10,7 +10,13 @@ import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60,
+    },
+  },
+});
 
 export const theme = extendTheme(
   {
