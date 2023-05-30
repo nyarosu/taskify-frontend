@@ -74,17 +74,7 @@ const Login = () => {
     const response = await fetch(`${API_URL}/me`, { credentials: "include" });
     if (response.ok) {
       const json = await response.json();
-      dispatcher(
-        login({
-          first_name: json.first_name,
-          last_name: json.last_name,
-          email: json.email,
-          company: json.company_name,
-          companyId: json.company_id,
-          isCompanyAdmin: json.is_company_admin,
-          picture: /* TODO */ "",
-        })
-      );
+      dispatcher(createLoginAction(json));
       setIsLoggedIn(true);
       router.push("/dashboard", undefined, { shallow: true });
     }
