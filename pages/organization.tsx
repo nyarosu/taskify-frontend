@@ -23,6 +23,7 @@ import PendingUsersList from "@/components/PendingUsersList";
 import { useAppSelector } from "@/utils/redux_hooks";
 
 const Organization = () => {
+  const user = useAppSelector((state) => state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isLoading,
@@ -68,9 +69,11 @@ const Organization = () => {
           >
             <TabList>
               <Tab>Active</Tab>
-              <Tab isDisabled={pendingCount === 0 || isLoading || isError}>
-                Pending ({!isLoading && !isError ? pendingCount : 0})
-              </Tab>
+              {user.isCompanyAdmin && (
+                <Tab isDisabled={pendingCount === 0 || isLoading || isError}>
+                  Pending ({!isLoading && !isError ? pendingCount : 0})
+                </Tab>
+              )}
             </TabList>
             <TabPanels>
               <TabPanel>

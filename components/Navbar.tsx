@@ -69,20 +69,19 @@ export const Navbar = () => {
                 >
                   Tasks
                 </Button>
-                {user.isCompanyAdmin && (
-                  <Button
-                    aria-current={
-                      router.pathname === "/company" ? "page" : undefined
-                    }
-                    onClick={() => {
-                      router.push("/organization", undefined, {
-                        shallow: true,
-                      });
-                    }}
-                  >
-                    Organization
-                  </Button>
-                )}
+
+                <Button
+                  aria-current={
+                    router.pathname === "/company" ? "page" : undefined
+                  }
+                  onClick={() => {
+                    router.push("/organization", undefined, {
+                      shallow: true,
+                    });
+                  }}
+                >
+                  Organization
+                </Button>
               </ButtonGroup>
             )}
           </HStack>

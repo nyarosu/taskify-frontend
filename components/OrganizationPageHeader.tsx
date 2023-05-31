@@ -16,12 +16,14 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { CgOrganisation } from "react-icons/cg";
 import { BsFillPersonPlusFill } from "react-icons/bs";
 import React from "react";
+import { useAppSelector } from "@/utils/redux_hooks";
 
 export const OrganizationPageHeader: React.FC<{
   hasUsers: boolean;
   openModal: () => void;
   setSearchQuery: (queryEvent: React.ChangeEvent<HTMLInputElement>) => void;
 }> = (props) => {
+  const user = useAppSelector((state) => state.user);
   return (
     <Container>
       <Stack
@@ -47,14 +49,16 @@ export const OrganizationPageHeader: React.FC<{
                 onChange={props.setSearchQuery}
               />
             </InputGroup>
-            <Button
-              variant="primary"
-              leftIcon={<BsFillPersonPlusFill />}
-              width="12rem"
-              onClick={props.openModal}
-            >
-              Add a user
-            </Button>
+            {user.isCompanyAdmin && (
+              <Button
+                variant="primary"
+                leftIcon={<BsFillPersonPlusFill />}
+                width="12rem"
+                onClick={props.openModal}
+              >
+                Add a user
+              </Button>
+            )}
           </HStack>
         )}
       </Stack>
