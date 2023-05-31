@@ -125,7 +125,7 @@ export const Navbar = () => {
                   <MenuItem
                     onClick={async () => {
                       // Clear query cache and redux store
-                      queryClient.clear();
+                      queryClient.removeQueries();
                       dispatcher(logout());
 
                       // Invalidate session and return to index page.
