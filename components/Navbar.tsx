@@ -24,12 +24,16 @@ import { Logo } from "./Logo";
 import { Sidebar } from "./Sidebar";
 import { ToggleButton } from "./ToggleButton";
 import { useRouter } from "next/router";
-import { useAppSelector } from "@/utils/redux_hooks";
+import { useAppDispatch, useAppSelector } from "@/utils/redux_hooks";
 import { signout } from "@/utils/queries";
+import { useQueryClient } from "@tanstack/react-query";
+import { logout } from "@/utils/store";
 
 export const Navbar = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const user = useAppSelector((state) => state.user);
+  const dispatcher = useAppDispatch();
 
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onToggle, onClose } = useDisclosure();
@@ -120,6 +124,11 @@ export const Navbar = () => {
                   <MenuDivider />
                   <MenuItem
                     onClick={async () => {
+                      // Clear query cache and redux store
+                      queryClient.clear();
+                      dispatcher(logout());
+
+                      // Invalidate session and return to index page.
                       await signout();
                       router.push("/");
                     }}
