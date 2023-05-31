@@ -75,9 +75,45 @@ async function inviteUserToOrganization(values: {
     throw new Error("An unknown error occured. Please try again later.");
   }
 }
+
+async function createNewProject(values: {
+  projectName: string;
+  projectDescription: string;
+  projectLead: string;
+  projectCoverImage: string;
+}) {
+  const response = await fetch(`${API_URL}/project`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      project_name: values.projectName,
+      project_description: values.projectDescription,
+      project_lead: values.projectLead,
+      project_cover_image: values.projectCoverImage,
+    }),
+  });
+
+  if (response.ok) {
+    const newProject = response.json();
+    return newProject;
+  }
+
+  if (response.status === 400) {
+    throw new Error(
+      "The project details you entered aren't valid. Please try again."
+    );
+  } else {
+    throw new Error("An error occured. Please try again later.");
+  }
+}
+
 export {
   postLogin,
   signout,
   getUsersForOrganization,
   inviteUserToOrganization,
+  createNewProject,
 };

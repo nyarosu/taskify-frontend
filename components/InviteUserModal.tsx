@@ -93,7 +93,6 @@ const InviteUserModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
           isClosable: true,
         });
       }
-      onClose();
       return;
     }
   };

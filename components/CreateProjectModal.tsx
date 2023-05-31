@@ -17,6 +17,7 @@ import {
   Select,
   Grid,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import Rocket from "../public/rocket.png";
 import Blueprint from "../public/blueprint.png";
@@ -36,6 +37,8 @@ import { API_URL } from "@/pages/_app";
 import ProjectLeadSuggestion from "./ProjectLeadSuggestion";
 import { useAppSelector } from "@/utils/redux_hooks";
 import { UserType } from "@/utils/store";
+import { useMutation } from "@tanstack/react-query";
+import { createNewProject } from "@/utils/queries";
 
 const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   props
@@ -46,19 +49,56 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   const [selectedProjectLead, setSelectedProjectLead] = useState<string>();
   const [projectLeadIsInvalid, setProjectLeadIsInvalid] = useState(false);
 
+  const toast = useToast();
+
+  const createProjectMutation = useMutation({
+    mutationFn: createNewProject,
+    onSuccess: (data, variables) => {},
+  });
+
   const closeModal = props.onClose;
-  const createProject = (values: any) => {
-    if (!selectedProjectLead && user.type === UserType.OrganizationAdmin) {
+  const createProject = async (values: any, { resetForm }: any) => {
+    if (!selectedProjectLead) {
       setProjectLeadIsInvalid(true);
       return;
     } else {
       values.projectLead = selectedProjectLead;
     }
     values.projectCoverImage = projectCoverImageName;
-    setSelectedProjectLead(undefined);
-    setProjectCoverImage(undefined);
-    setProjectCoverImageName(undefined);
-    props.onClose();
+
+    try {
+      await createProjectMutation.mutateAsync(values);
+
+      toast({
+        title: "Project created!",
+        position: "top",
+        description: "Project successfully created.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      resetForm();
+      setSelectedProjectLead(undefined);
+      list.setFilterText("");
+      setProjectCoverImage(undefined);
+      setProjectCoverImageName(undefined);
+      props.onClose();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "An error occured.",
+          position: "top",
+          description: error.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      setSelectedProjectLead(undefined);
+      setProjectCoverImage(undefined);
+      setProjectCoverImageName(undefined);
+      return;
+    }
   };
 
   const setProjectLead = (projectLead: string | undefined) => {
@@ -200,7 +240,14 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
                 </ModalBody>
 
                 <ModalFooter>
-                  <Button variant="ghost" mr={3} onClick={closeModal}>
+                  <Button
+                    variant="ghost"
+                    mr={3}
+                    onClick={() => {
+                      props.handleReset();
+                      closeModal();
+                    }}
+                  >
                     Close
                   </Button>
                   <Button colorScheme="blue" type="submit">

@@ -15,9 +15,10 @@ import { FiSearch } from "react-icons/fi";
 import { AiOutlineFundProjectionScreen, AiOutlinePlus } from "react-icons/ai";
 import { useAppSelector } from "@/utils/redux_hooks";
 
-export const ProjectsPageHeader: React.FC<{ hasProjects: boolean }> = (
-  props
-) => {
+export const ProjectsPageHeader: React.FC<{
+  canCreate: boolean | null;
+  openModal: () => void;
+}> = (props) => {
   const user = useAppSelector((state) => state.user);
   return (
     <Container>
@@ -32,25 +33,28 @@ export const ProjectsPageHeader: React.FC<{ hasProjects: boolean }> = (
             Projects
           </Heading>
         </HStack>
-        {props.hasProjects && (
-          <HStack spacing="2.5rem">
-            <InputGroup maxW={{ sm: "xs" }}>
-              <InputLeftElement pointerEvents="none">
-                <Icon as={FiSearch} color="muted" boxSize="5" />
-              </InputLeftElement>
-              <Input placeholder="Search" />
-            </InputGroup>
-            {user.isCompanyAdmin && (
-              <Button
-                variant="primary"
-                leftIcon={<AiOutlinePlus />}
-                width="6rem"
-              >
-                New
-              </Button>
-            )}
-          </HStack>
-        )}
+
+        <HStack spacing="2.5rem">
+          <InputGroup maxW={{ sm: "xs" }}>
+            <InputLeftElement pointerEvents="none">
+              <Icon as={FiSearch} color="muted" boxSize="5" />
+            </InputLeftElement>
+            <Input placeholder="Search" />
+          </InputGroup>
+          {user.isCompanyAdmin && (
+            <Button
+              variant="solid"
+              colorScheme="blue"
+              size="md"
+              leftIcon={<AiOutlinePlus />}
+              onClick={props.openModal}
+              px={6}
+              _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+            >
+              New
+            </Button>
+          )}
+        </HStack>
       </Stack>
     </Container>
   );
