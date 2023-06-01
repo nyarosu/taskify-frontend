@@ -1,4 +1,4 @@
-import { subscribeToProject } from "@/utils/queries";
+import { ProjectResponse, subscribeToProject } from "@/utils/queries";
 import { parseProjectCoverImage } from "@/utils/types/project";
 import {
   Avatar,
@@ -10,7 +10,7 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -43,11 +43,20 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
   const bgColor = useColorModeValue("gray.200", "gray.600");
   const hoverBgColor = useColorModeValue("gray.300", "gray.500");
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const [loadingId, setLoadingId] = useState<number>(0);
   const subscribeToProjectMutation = useMutation({
     mutationFn: subscribeToProject,
-    onSuccess: () => {},
+    onSuccess: (data, variables) => {
+      const currentSubscribed = queryClient.getQueryData<ProjectResponse>(["subscribedProjects"])
+      // Update subscribed cache with new project
+      if (currentSubscribed) {
+        queryClient.setQueryData(["subscribedProjects"], {
+          projects: [...currentSubscribed.projects, data]
+        })
+      }
+    },
   });
 
   const handleSubscribe = async (id: number) => {
@@ -94,7 +103,7 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
           transition="background 0.2s"
           _hover={{ cursor: "pointer", bg: hoverBgColor }}
           bg={bgColor}
-          onClick={() => router.push(`/projects/${project.id}`)}
+          onClick={() => router.push(`/projects/${project.id}`, undefined, { shallow: true })}
         >
           <Flex align="center">
             <Box boxSize="80px" marginRight={4}>
@@ -154,9 +163,6 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
               colorScheme="gray"
               variant="outline"
               isDisabled={true}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
             >
               Subscribed
             </Button>

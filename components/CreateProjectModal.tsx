@@ -37,8 +37,10 @@ import { API_URL } from "@/pages/_app";
 import ProjectLeadSuggestion from "./ProjectLeadSuggestion";
 import { useAppSelector } from "@/utils/redux_hooks";
 import { UserType } from "@/utils/store";
-import { useMutation } from "@tanstack/react-query";
-import { createNewProject } from "@/utils/queries";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNewProject, ProjectResponse } from "@/utils/queries";
+import { stat } from "fs";
+
 
 const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   props
@@ -48,12 +50,26 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   const [projectCoverImageName, setProjectCoverImageName] = useState<string>();
   const [selectedProjectLead, setSelectedProjectLead] = useState<string>();
   const [projectLeadIsInvalid, setProjectLeadIsInvalid] = useState(false);
+  const queryClient = useQueryClient();
 
   const toast = useToast();
 
   const createProjectMutation = useMutation({
     mutationFn: createNewProject,
-    onSuccess: (data, variables) => {},
+    onSuccess: (data, variables) => {
+      const currentData = queryClient.getQueryData<ProjectResponse>(["allProjects"]);
+      const subscribedProjectsData = queryClient.getQueryData<ProjectResponse>(["subscribedProjects"]);
+      if (currentData) {
+        queryClient.setQueryData(['allProjects'], {projects: [ ...currentData.projects, data]});
+      }
+
+      // Need to add it to susbcribed projects too if applicable
+      if (data.project_lead.email === user.email) {
+        if (subscribedProjectsData) {
+          queryClient.setQueryData(["subscribedProjects"], { projects: [...subscribedProjectsData.projects, data]});
+        }
+      }
+    },
   });
 
   const closeModal = props.onClose;

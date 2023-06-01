@@ -43,7 +43,7 @@ const SubscribedProjectsTable: React.FC<SubscribedProjectsTableProps> = ({
           transition="background 0.2s"
           _hover={{ cursor: "pointer", bg: hoverBgColor }}
           bg={bgColor}
-          onClick={() => router.push(`/projects/${project.id}`)}
+          onClick={() => router.push(`/projects/${project.id}`, undefined, { shallow: true })}
         >
           <Flex align="center">
             <Box boxSize="80px" marginRight={4}>

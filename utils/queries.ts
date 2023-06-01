@@ -2,7 +2,7 @@ import { API_URL } from "@/pages/_app";
 import { NextRouter, Router } from "next/router";
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { useAppDispatch } from "./redux_hooks";
-import { ProjectInfo } from "./types/project";
+import { Project, ProjectInfo } from "./types/project";
 interface Credentials {
   email: string;
   password: string;
@@ -82,7 +82,7 @@ async function createNewProject(values: {
   projectDescription: string;
   projectLead: string;
   projectCoverImage: string;
-}) {
+}): Promise<ProjectInfo> {
   const response = await fetch(`${API_URL}/project`, {
     method: "POST",
     headers: {
@@ -111,7 +111,7 @@ async function createNewProject(values: {
   }
 }
 
-interface ProjectResponse {
+export interface ProjectResponse {
   projects: ProjectInfo[];
 }
 
@@ -163,6 +163,19 @@ async function subscribeToProject(values: {
   return subscribedProject;
 }
 
+async function getProjectInfo(projectId: number): Promise<Project> {
+  const response = await fetch(`${API_URL}/project/${projectId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("An error occured. Please try again later.");
+  }
+  const info = await response.json();
+  return info;
+}
+
 export {
   postLogin,
   signout,
@@ -172,4 +185,5 @@ export {
   getAllProjectsForOrganization,
   getSubscribedProjects,
   subscribeToProject,
+  getProjectInfo,
 };
