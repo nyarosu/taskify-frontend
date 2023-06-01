@@ -23,6 +23,12 @@ import LoggedInLayout from "@/components/LoggedInLayout";
 import { useAppSelector } from "@/utils/redux_hooks";
 import NoUserProjectsMessage from "@/components/NoSubscribedProjectsMessage";
 import NoSubscribedProjectsMessage from "@/components/NoSubscribedProjectsMessage";
+import {
+  getAllProjectsForOrganization,
+  getSubscribedProjects,
+} from "@/utils/queries";
+import OrganizationProjectsTable from "@/components/OrganizationProjectsTable";
+import SubscribedProjectsTable from "@/components/SubscribedProjectsTable";
 
 const Projects = () => {
   const user = useAppSelector((state) => state.user);
@@ -32,17 +38,27 @@ const Projects = () => {
     isLoading: isLoadingAll,
     isError: isErrorAll,
     data: allProjects,
-  } = useQuery({ queryKey: ["allProjects"], queryFn: () => {} });
+  } = useQuery({
+    queryKey: ["allProjects"],
+    queryFn: getAllProjectsForOrganization,
+  });
 
   const {
-    isLoading: isLoadingUser,
-    isError: isErrorUser,
-    data: userProjects,
-  } = useQuery({ queryKey: ["subscribedProjects"], queryFn: () => {} });
+    isLoading: isLoadingSubscribed,
+    isError: isErrorSubscribed,
+    data: subscribedProjects,
+  } = useQuery({
+    queryKey: ["subscribedProjects"],
+    queryFn: getSubscribedProjects,
+  });
 
   const [tabIndex, setTabIndex] = useState(0);
-  const hasProjects = false;
-  const hasSubscribedProjects = false;
+  const hasProjects =
+    !isLoadingAll && !isErrorAll && allProjects.projects.length > 0;
+  const hasSubscribedProjects =
+    !isLoadingSubscribed &&
+    !isErrorSubscribed &&
+    subscribedProjects.projects.length > 0;
   const tabRef = useRef<TabsProps>();
   const changeTab = (index: number) => {
     setTabIndex(index);
@@ -77,18 +93,32 @@ const Projects = () => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Skeleton isLoaded={true}>
+                <Skeleton isLoaded={!isLoadingSubscribed && !isErrorSubscribed}>
                   {hasSubscribedProjects ? (
-                    <></>
+                    <SubscribedProjectsTable
+                      projects={
+                        !isLoadingSubscribed &&
+                        !isErrorSubscribed &&
+                        subscribedProjects
+                          ? subscribedProjects.projects
+                          : []
+                      }
+                    />
                   ) : (
                     <NoSubscribedProjectsMessage changeTab={changeTab} />
                   )}
                 </Skeleton>
               </TabPanel>
               <TabPanel>
-                <Skeleton isLoaded={true}>
+                <Skeleton isLoaded={!isLoadingAll && !isErrorAll}>
                   {hasProjects ? (
-                    <></>
+                    <OrganizationProjectsTable
+                      projects={
+                        !isLoadingAll && !isErrorAll && allProjects
+                          ? allProjects.projects
+                          : []
+                      }
+                    />
                   ) : (
                     <NoProjectsMessage openModal={onOpen} />
                   )}

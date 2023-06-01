@@ -2,6 +2,7 @@ import { API_URL } from "@/pages/_app";
 import { NextRouter, Router } from "next/router";
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { useAppDispatch } from "./redux_hooks";
+import { ProjectInfo } from "./types/project";
 interface Credentials {
   email: string;
   password: string;
@@ -63,7 +64,7 @@ async function inviteUserToOrganization(values: {
   });
 
   if (response.ok) {
-    const invitedUser = response.json();
+    const invitedUser = await response.json();
     return invitedUser;
   }
 
@@ -97,7 +98,7 @@ async function createNewProject(values: {
   });
 
   if (response.ok) {
-    const newProject = response.json();
+    const newProject = await response.json();
     return newProject;
   }
 
@@ -110,10 +111,65 @@ async function createNewProject(values: {
   }
 }
 
+interface ProjectResponse {
+  projects: ProjectInfo[];
+}
+
+async function getAllProjectsForOrganization(): Promise<ProjectResponse> {
+  const response = await fetch(`${API_URL}/project`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (response.ok) {
+    const projects = await response.json();
+    return projects;
+  } else {
+    throw new Error("An error occured. Please try again later.");
+  }
+}
+
+async function getSubscribedProjects(): Promise<ProjectResponse> {
+  const response = await fetch(`${API_URL}/project/subscribed`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (response.ok) {
+    const subscribed_projects = await response.json();
+    return subscribed_projects;
+  } else {
+    throw new Error("An error occured. Please try again later.");
+  }
+}
+
+async function subscribeToProject(values: {
+  projectId: number;
+}): Promise<ProjectInfo> {
+  const response = await fetch(`${API_URL}/project/subscribed`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      project_id: values.projectId,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error("An error occured. Please try again later.");
+  }
+  const subscribedProject = await response.json();
+  return subscribedProject;
+}
+
 export {
   postLogin,
   signout,
   getUsersForOrganization,
   inviteUserToOrganization,
   createNewProject,
+  getAllProjectsForOrganization,
+  getSubscribedProjects,
+  subscribeToProject,
 };
