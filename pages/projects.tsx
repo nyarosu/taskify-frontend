@@ -118,6 +118,13 @@ const Projects = () => {
                           ? allProjects.projects
                           : []
                       }
+                      subscribed={
+                        !isLoadingSubscribed &&
+                        !isErrorSubscribed &&
+                        subscribedProjects
+                          ? subscribedProjects.projects
+                          : []
+                      }
                     />
                   ) : (
                     <NoProjectsMessage openModal={onOpen} />

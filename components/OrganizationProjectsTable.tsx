@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { BsFillPersonCheckFill } from "react-icons/bs";
 import { IoPersonAdd } from "react-icons/io5";
 
 type OrganizationUser = {
@@ -31,10 +32,12 @@ type Project = {
 
 interface OrganizationProjectsTableProps {
   projects: Project[];
+  subscribed: Project[];
 }
 
 const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
   projects,
+  subscribed,
 }) => {
   const router = useRouter();
   const bgColor = useColorModeValue("gray.200", "gray.600");
@@ -129,17 +132,35 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
               </Text>
             </VStack>
           </Flex>
-          <Button
-            isLoading={loadingId === project.id}
-            leftIcon={<IoPersonAdd />}
-            colorScheme="blue"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSubscribe(project.id);
-            }}
-          >
-            Subscribe
-          </Button>
+          {!subscribed.some((subscribed) => {
+            return subscribed.id == project.id;
+          }) ? (
+            <Button
+              isLoading={loadingId === project.id}
+              leftIcon={<IoPersonAdd />}
+              colorScheme="blue"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSubscribe(project.id);
+              }}
+              _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
+            >
+              Subscribe
+            </Button>
+          ) : (
+            <Button
+              isLoading={false}
+              leftIcon={<BsFillPersonCheckFill />}
+              colorScheme="gray"
+              variant="outline"
+              isDisabled={true}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              Subscribed
+            </Button>
+          )}
         </Box>
       ))}
     </VStack>

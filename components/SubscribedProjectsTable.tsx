@@ -1,4 +1,4 @@
-import { parseProjectCoverImage } from "@/utils/types/project";
+import { ProjectInfo, parseProjectCoverImage } from "@/utils/types/project";
 import {
   Avatar,
   Box,
@@ -18,16 +18,8 @@ type OrganizationUser = {
   last_name: string;
 };
 
-type Project = {
-  id: number;
-  project_cover_image: string | null;
-  name: string;
-  description: string;
-  project_lead: OrganizationUser;
-};
-
 interface SubscribedProjectsTableProps {
-  projects: Project[];
+  projects: ProjectInfo[];
 }
 
 const SubscribedProjectsTable: React.FC<SubscribedProjectsTableProps> = ({
