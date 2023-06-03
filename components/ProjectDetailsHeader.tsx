@@ -5,8 +5,9 @@ import { parseProjectCoverImage } from "@/utils/types/project";
 
 export const ProjectDetailsHeader: React.FC<{
   projectName: string;
+  projectCover: string | null;
   isLoading: boolean;
-}> = ({ projectName, isLoading }) => {
+}> = ({ projectName, isLoading, projectCover }) => {
   return (
     <Flex p={2} borderColor="gray.200" alignItems="center">
       <Box mr={4}>
@@ -15,7 +16,7 @@ export const ProjectDetailsHeader: React.FC<{
             width={64} // adjust size as per requirement
             height={64}
             objectFit="cover"
-            src={parseProjectCoverImage("Rocket")}
+            src={parseProjectCoverImage(projectCover)}
             alt={projectName}
           />
         </Skeleton>

@@ -54,6 +54,7 @@ const ProjectPage = () => {
         <ProjectDetailsHeader
           isLoading={isLoadingProjectInfo || isErrorProjectInfo}
           projectName={project ? project.name : ""}
+          projectCover={project ? project.project_cover_image : null}
         />
         <Box my={6} />
         <Tabs colorScheme="blue" variant="solid-rounded">
