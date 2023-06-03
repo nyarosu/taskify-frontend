@@ -1,4 +1,4 @@
-import { ProjectResponse, subscribeToProject } from "@/utils/queries";
+import { ProjectResponse, joinProject } from "@/utils/queries";
 import { parseProjectCoverImage } from "@/utils/types/project";
 import {
   Avatar,
@@ -47,14 +47,16 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
 
   const [loadingId, setLoadingId] = useState<number>(0);
   const subscribeToProjectMutation = useMutation({
-    mutationFn: subscribeToProject,
+    mutationFn: joinProject,
     onSuccess: (data, variables) => {
-      const currentSubscribed = queryClient.getQueryData<ProjectResponse>(["subscribedProjects"])
+      const currentSubscribed = queryClient.getQueryData<ProjectResponse>([
+        "subscribedProjects",
+      ]);
       // Update subscribed cache with new project
       if (currentSubscribed) {
         queryClient.setQueryData(["subscribedProjects"], {
-          projects: [...currentSubscribed.projects, data]
-        })
+          projects: [data, ...currentSubscribed.projects],
+        });
       }
     },
   });
@@ -103,7 +105,9 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
           transition="background 0.2s"
           _hover={{ cursor: "pointer", bg: hoverBgColor }}
           bg={bgColor}
-          onClick={() => router.push(`/projects/${project.id}`, undefined, { shallow: true })}
+          onClick={() =>
+            router.push(`/projects/${project.id}`, undefined, { shallow: true })
+          }
         >
           <Flex align="center">
             <Box boxSize="80px" marginRight={4}>
@@ -136,7 +140,7 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
                     project.project_lead.last_name}
                 </Text>
               </Flex>
-              <Text fontSize="sm" noOfLines={2} isTruncated>
+              <Text fontSize="sm" noOfLines={2} isTruncated maxWidth="55rem">
                 {project.description} {/* Truncated description */}
               </Text>
             </VStack>
@@ -154,7 +158,7 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
               }}
               _hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
             >
-              Subscribe
+              Join
             </Button>
           ) : (
             <Button
@@ -164,7 +168,7 @@ const OrganizationProjectsTable: React.FC<OrganizationProjectsTableProps> = ({
               variant="outline"
               isDisabled={true}
             >
-              Subscribed
+              Joined
             </Button>
           )}
         </Box>

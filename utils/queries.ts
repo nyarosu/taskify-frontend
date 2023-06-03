@@ -3,6 +3,7 @@ import { NextRouter, Router } from "next/router";
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { useAppDispatch } from "./redux_hooks";
 import { Project, ProjectInfo } from "./types/project";
+import { NewOrder } from "@/components/TaskList";
 interface Credentials {
   email: string;
   password: string;
@@ -129,8 +130,8 @@ async function getAllProjectsForOrganization(): Promise<ProjectResponse> {
   }
 }
 
-async function getSubscribedProjects(): Promise<ProjectResponse> {
-  const response = await fetch(`${API_URL}/project/subscribed`, {
+async function getJoinedProjects(): Promise<ProjectResponse> {
+  const response = await fetch(`${API_URL}/project/members`, {
     method: "GET",
     credentials: "include",
   });
@@ -143,10 +144,10 @@ async function getSubscribedProjects(): Promise<ProjectResponse> {
   }
 }
 
-async function subscribeToProject(values: {
+async function joinProject(values: {
   projectId: number;
 }): Promise<ProjectInfo> {
-  const response = await fetch(`${API_URL}/project/subscribed`, {
+  const response = await fetch(`${API_URL}/project/members`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -172,8 +173,36 @@ async function getProjectInfo(projectId: number): Promise<Project> {
   if (!response.ok) {
     throw new Error("An error occured. Please try again later.");
   }
-  const info = await response.json();
-  return info;
+  const res = await response.json();
+  return {
+    ...res.info,
+    tasks: res.tasks,
+  };
+}
+
+async function updateRelativeTaskPriority(values: {
+  project_id: number;
+  newOrder: NewOrder;
+}): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/project/${values.project_id}/priority`,
+    {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tasks: values.newOrder,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "An error occured when updating task priority. Please try again later."
+    );
+  }
 }
 
 export {
@@ -183,7 +212,8 @@ export {
   inviteUserToOrganization,
   createNewProject,
   getAllProjectsForOrganization,
-  getSubscribedProjects,
-  subscribeToProject,
+  getJoinedProjects,
+  joinProject,
   getProjectInfo,
+  updateRelativeTaskPriority,
 };

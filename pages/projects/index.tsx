@@ -10,6 +10,7 @@ import {
   TabPanel,
   SlideFade,
   TabsProps,
+  SkeletonText,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { ChangeEventHandler, ReactElement, useRef, useState } from "react";
@@ -25,7 +26,7 @@ import NoUserProjectsMessage from "@/components/NoSubscribedProjectsMessage";
 import NoSubscribedProjectsMessage from "@/components/NoSubscribedProjectsMessage";
 import {
   getAllProjectsForOrganization,
-  getSubscribedProjects,
+  getJoinedProjects,
 } from "@/utils/queries";
 import OrganizationProjectsTable from "@/components/OrganizationProjectsTable";
 import SubscribedProjectsTable from "@/components/SubscribedProjectsTable";
@@ -49,7 +50,7 @@ const Projects = () => {
     data: subscribedProjects,
   } = useQuery({
     queryKey: ["subscribedProjects"],
-    queryFn: getSubscribedProjects,
+    queryFn: getJoinedProjects,
   });
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -93,7 +94,12 @@ const Projects = () => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Skeleton isLoaded={!isLoadingSubscribed && !isErrorSubscribed}>
+                <SkeletonText
+                  isLoaded={!isLoadingSubscribed && !isErrorSubscribed}
+                  noOfLines={7}
+                  spacing="10"
+                  skeletonHeight="10"
+                >
                   {hasSubscribedProjects ? (
                     <SubscribedProjectsTable
                       projects={
@@ -107,10 +113,15 @@ const Projects = () => {
                   ) : (
                     <NoSubscribedProjectsMessage changeTab={changeTab} />
                   )}
-                </Skeleton>
+                </SkeletonText>
               </TabPanel>
               <TabPanel>
-                <Skeleton isLoaded={!isLoadingAll && !isErrorAll}>
+                <SkeletonText
+                  isLoaded={!isLoadingSubscribed && !isErrorSubscribed}
+                  noOfLines={7}
+                  spacing="10"
+                  skeletonHeight="10"
+                >
                   {hasProjects ? (
                     <OrganizationProjectsTable
                       projects={
@@ -129,7 +140,7 @@ const Projects = () => {
                   ) : (
                     <NoProjectsMessage openModal={onOpen} />
                   )}
-                </Skeleton>
+                </SkeletonText>
               </TabPanel>
             </TabPanels>
           </Tabs>

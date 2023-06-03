@@ -1,22 +1,33 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Flex, Skeleton, SkeletonText } from "@chakra-ui/react";
 import { useAppSelector } from "@/utils/redux_hooks";
+import Image from "next/image";
+import { parseProjectCoverImage } from "@/utils/types/project";
 
-export const ProjectDetailsHeader: React.FC<{ projectName: string }> = ({
-  projectName,
-}) => {
+export const ProjectDetailsHeader: React.FC<{
+  projectName: string;
+  isLoading: boolean;
+}> = ({ projectName, isLoading }) => {
   return (
-    <Box p={4} borderBottom="1px solid" borderColor="gray.200">
-      <Box display="flex" alignItems="center">
-        {/* Replace the placeholder image URL with the project's cover image */}
-        <Box
-          borderRadius="md"
-          bg="gray.200"
-          width="64px"
-          height="64px"
-          marginRight={4}
-        ></Box>
-        <Heading size="lg">{projectName}</Heading>
+    <Flex p={2} borderColor="gray.200" alignItems="center">
+      <Box mr={4}>
+        <Skeleton isLoaded={!isLoading}>
+          <Image
+            width={64} // adjust size as per requirement
+            height={64}
+            objectFit="cover"
+            src={parseProjectCoverImage("Rocket")}
+            alt={projectName}
+          />
+        </Skeleton>
       </Box>
-    </Box>
+      <SkeletonText
+        noOfLines={3}
+        spacing="4"
+        skeletonHeight="2"
+        isLoaded={!isLoading}
+      >
+        <Heading size="lg">{projectName}</Heading>
+      </SkeletonText>
+    </Flex>
   );
 };

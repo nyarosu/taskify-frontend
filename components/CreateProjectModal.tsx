@@ -41,7 +41,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNewProject, ProjectResponse } from "@/utils/queries";
 import { stat } from "fs";
 
-
 const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   props
 ) => {
@@ -57,16 +56,24 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
   const createProjectMutation = useMutation({
     mutationFn: createNewProject,
     onSuccess: (data, variables) => {
-      const currentData = queryClient.getQueryData<ProjectResponse>(["allProjects"]);
-      const subscribedProjectsData = queryClient.getQueryData<ProjectResponse>(["subscribedProjects"]);
+      const currentData = queryClient.getQueryData<ProjectResponse>([
+        "allProjects",
+      ]);
+      const subscribedProjectsData = queryClient.getQueryData<ProjectResponse>([
+        "subscribedProjects",
+      ]);
       if (currentData) {
-        queryClient.setQueryData(['allProjects'], {projects: [ ...currentData.projects, data]});
+        queryClient.setQueryData(["allProjects"], {
+          projects: [data, ...currentData.projects],
+        });
       }
 
       // Need to add it to susbcribed projects too if applicable
       if (data.project_lead.email === user.email) {
         if (subscribedProjectsData) {
-          queryClient.setQueryData(["subscribedProjects"], { projects: [...subscribedProjectsData.projects, data]});
+          queryClient.setQueryData(["subscribedProjects"], {
+            projects: [...subscribedProjectsData.projects, data],
+          });
         }
       }
     },
