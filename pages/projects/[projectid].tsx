@@ -17,6 +17,7 @@ import {
   Skeleton,
   SkeletonText,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 import LoggedInLayout from "@/components/LoggedInLayout";
 import { ReactElement, useState } from "react";
@@ -31,10 +32,16 @@ import { TaskList } from "@/components/TaskList";
 import NoTasksPlaceholder from "@/components/NoTasksPlaceholder";
 import { Task } from "@/utils/types/task";
 import { TaskDetails } from "@/components/TaskDetails";
+import { CreateTaskModal } from "@/components/CreateTaskModal";
 
 const ProjectPage = () => {
   const router = useRouter();
   const { projectid } = router.query;
+  const {
+    isOpen: createTaskModalIsOpen,
+    onOpen: onCreateTaskModalOpen,
+    onClose: onCreateTaskModalClose,
+  } = useDisclosure();
 
   // Fetch detailed project info
   const {
@@ -55,6 +62,10 @@ const ProjectPage = () => {
         <title>Taskify | {project ? project.name : ""} Project Details</title>
       </Head>
       <SlideFade in={true}>
+        <CreateTaskModal
+          isOpen={createTaskModalIsOpen}
+          onClose={onCreateTaskModalClose}
+        />
         <ProjectDetailsHeader
           isLoading={isLoadingProjectInfo || isErrorProjectInfo}
           projectName={project ? project.name : ""}
@@ -104,9 +115,9 @@ const ProjectPage = () => {
 
             <Button
               leftIcon={<IoCreateOutline />}
-              onClick={() => {}}
               colorScheme="blue"
               marginRight={4}
+              onClick={onCreateTaskModalOpen}
             >
               Create Task
             </Button>
