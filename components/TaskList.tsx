@@ -13,14 +13,16 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Reorder } from "framer-motion";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 const List = chakra(Reorder.Group);
 const ListItem = chakra(Reorder.Item);
 
-export const TaskList: React.FC<{ tasks: Task[]; projectid: number }> = (
-  props
-) => {
+export const TaskList: React.FC<{
+  tasks: Task[];
+  projectid: number;
+  onTaskClick: Dispatch<SetStateAction<Task | null>>;
+}> = (props) => {
   const queryClient = useQueryClient();
   const [order, setOrder] = useState(() =>
     props.tasks.map((task) => task.relative_priority)
@@ -47,7 +49,7 @@ export const TaskList: React.FC<{ tasks: Task[]; projectid: number }> = (
       },
       {}
     );
-    // Send the new order to backend
+    // Send the new priorities to backend
     await updatePriorityMutation.mutateAsync({
       project_id: props.projectid,
       newOrder,
@@ -75,6 +77,9 @@ export const TaskList: React.FC<{ tasks: Task[]; projectid: number }> = (
                     borderRadius="lg"
                     cursor="grab"
                     whileTap={{ cursor: "grabbing", scale: 1.05 }}
+                    onClick={() => {
+                      props.onTaskClick(issue);
+                    }}
                   >
                     <Stack shouldWrapChildren spacing="4">
                       <Text
@@ -101,7 +106,7 @@ export const TaskList: React.FC<{ tasks: Task[]; projectid: number }> = (
                             color="subtle"
                             fontWeight="medium"
                           >
-                            Priority: {order.length - index}
+                            Priority: {issue.relative_priority}
                           </Text>
                           <Avatar
                             size={"sm"}

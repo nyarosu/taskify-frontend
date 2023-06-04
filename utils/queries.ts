@@ -4,6 +4,7 @@ import { QueryFunctionContext } from "@tanstack/react-query";
 import { useAppDispatch } from "./redux_hooks";
 import { Project, ProjectInfo } from "./types/project";
 import { NewOrder } from "@/components/TaskList";
+import { Task } from "./types/task";
 interface Credentials {
   email: string;
   password: string;
@@ -183,7 +184,7 @@ async function getProjectInfo(projectId: number): Promise<Project> {
 async function updateRelativeTaskPriority(values: {
   project_id: number;
   newOrder: NewOrder;
-}): Promise<void> {
+}): Promise<Task[]> {
   const response = await fetch(
     `${API_URL}/project/${values.project_id}/priority`,
     {
@@ -203,6 +204,8 @@ async function updateRelativeTaskPriority(values: {
       "An error occured when updating task priority. Please try again later."
     );
   }
+  const data = await response.json();
+  return data.tasks;
 }
 
 export {

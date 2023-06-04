@@ -29,6 +29,8 @@ import { IoCreateOutline, IoSparklesSharp } from "react-icons/io5";
 import { ProjectOverviewTab } from "@/components/ProjectOverviewTab";
 import { TaskList } from "@/components/TaskList";
 import NoTasksPlaceholder from "@/components/NoTasksPlaceholder";
+import { Task } from "@/utils/types/task";
+import { TaskDetails } from "@/components/TaskDetails";
 
 const ProjectPage = () => {
   const router = useRouter();
@@ -39,11 +41,13 @@ const ProjectPage = () => {
     isLoading: isLoadingProjectInfo,
     isError: isErrorProjectInfo,
     data: project,
-  } = useQuery(["getProjectInfo", Number(projectid)], () =>
-    getProjectInfo(Number(projectid))
+  } = useQuery(
+    ["getProjectInfo", Number(projectid)],
+    () => getProjectInfo(Number(projectid)),
+    { staleTime: 0, cacheTime: 0, refetchOnMount: true }
   );
 
-  // Hardcoded data for testing purposes
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   return (
     <>
@@ -117,21 +121,39 @@ const ProjectPage = () => {
             </TabPanel>
             <TabPanel>
               <Skeleton isLoaded={!isLoadingProjectInfo && !isErrorProjectInfo}>
-                {!isLoadingProjectInfo &&
-                !isErrorProjectInfo &&
-                project.tasks.length > 0 ? (
-                  <TaskList
-                    projectid={project.id}
-                    tasks={
-                      project
-                        ? project.tasks.sort(
-                            (a, b) => a.relative_priority - b.relative_priority
-                          )
-                        : []
-                    }
-                  />
+                {project && project.tasks.length > 0 ? (
+                  <Flex direction="row">
+                    <Box flex="1">
+                      <TaskList
+                        projectid={project.id}
+                        tasks={project.tasks.sort(
+                          (a, b) => a.relative_priority - b.relative_priority
+                        )}
+                        onTaskClick={setSelectedTask}
+                      />
+                    </Box>
+                    <Box
+                      flex="1"
+                      mt={5}
+                      bg={selectedTask ? "gray.100" : ""}
+                      h="100%"
+                    >
+                      {selectedTask && (
+                        <SlideFade in={true}>
+                          <TaskDetails task={selectedTask} />
+                        </SlideFade>
+                      )}
+                    </Box>
+                  </Flex>
                 ) : (
-                  <NoTasksPlaceholder />
+                  <Flex
+                    height="100%"
+                    alignItems="center"
+                    justifyContent="center"
+                    direction="column"
+                  >
+                    <NoTasksPlaceholder />
+                  </Flex>
                 )}
               </Skeleton>
             </TabPanel>
