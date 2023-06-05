@@ -1,4 +1,11 @@
-import { Task, TaskPriority, TaskStatus, TaskType } from "@/utils/types/task";
+import {
+  Task,
+  TaskPriority,
+  TaskStatus,
+  TaskType,
+  getColorSchemeForPriority,
+  getColorSchemeForStatus,
+} from "@/utils/types/task";
 import {
   Box,
   Heading,
@@ -38,23 +45,13 @@ export const TaskDetails: React.FC<{ task: Task }> = ({ task }) => {
       <Divider mb={4} />
       <Flex alignItems="center" justifyContent="space-between" mb={2}>
         <Text fontWeight="bold">Priority:</Text>
-        <Badge
-          colorScheme={
-            task.priority === TaskPriority.Critical
-              ? "red"
-              : task.priority === TaskPriority.High
-              ? "yellow"
-              : "green"
-          }
-        >
+        <Badge colorScheme={getColorSchemeForPriority(task.priority)}>
           {task.priority}
         </Badge>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb={2}>
         <Text fontWeight="bold">Status:</Text>
-        <Badge
-          colorScheme={task.status === TaskStatus.Closed ? "green" : "orange"}
-        >
+        <Badge colorScheme={getColorSchemeForStatus(task.status)}>
           {task.status}
         </Badge>
       </Flex>

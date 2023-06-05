@@ -29,3 +29,40 @@ export enum TaskPriority {
   Low = "P3",
   Backlog = "P4",
 }
+
+export const getColorSchemeForType = (type: TaskType) => {
+  switch (type) {
+    case TaskType.Feature:
+      return "green";
+    case TaskType.Bug:
+      return "red";
+  }
+};
+
+export const getColorSchemeForStatus = (type: TaskStatus) => {
+  switch (type) {
+    case TaskStatus.InProgress:
+      return "green";
+    case TaskStatus.Blocked:
+      return "red";
+    case TaskStatus.Closed:
+      return "gray";
+    case TaskStatus.UpForGrabs:
+      return "gray";
+  }
+};
+
+export const getColorSchemeForPriority = (type: TaskPriority) => {
+  switch (type) {
+    case TaskPriority.Critical:
+      return "red";
+    case TaskPriority.High:
+      return "red";
+    case TaskPriority.Medium:
+      return "orange";
+    case TaskPriority.Low:
+      return "green";
+    case TaskPriority.Backlog:
+      return "gray";
+  }
+};

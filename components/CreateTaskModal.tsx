@@ -13,25 +13,39 @@ import {
   Textarea,
   useToast,
   Tag,
+  NumberInput,
+  NumberInputField,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { Formik, Form, Field, FieldProps } from "formik";
-import { TaskType, TaskStatus, TaskPriority } from "@/utils/types/task";
+import {
+  TaskType,
+  TaskStatus,
+  TaskPriority,
+  getColorSchemeForType,
+  getColorSchemeForStatus,
+  getColorSchemeForPriority,
+} from "@/utils/types/task";
 import Select, { components, StylesConfig, OptionProps } from "react-select";
 import { CSSObject } from "@emotion/react";
+import { API_URL } from "@/pages/_app";
+import { Item, useAsyncList } from "react-stately";
+import { UserType } from "@/utils/store";
+import { Autocomplete } from "./Autocomplete";
+import { UserSuggestion } from "./UserSuggestion";
+import { useQueryClient } from "@tanstack/react-query";
 
 type OptionType = {
   label: string;
   value: string;
 };
 
-// Custom Option component for react-select
 const Option = (props: OptionProps<OptionType, false>) => {
-  const color =
-    props.data.value === TaskType.Feature
-      ? "green"
-      : props.data.value === TaskType.Bug
-      ? "red"
-      : "blue";
+  const color = Object.values(TaskType).includes(props.data.value as TaskType)
+    ? getColorSchemeForType(props.data.value as TaskType)
+    : Object.values(TaskPriority).includes(props.data.value as TaskPriority)
+    ? getColorSchemeForPriority(props.data.value as TaskPriority)
+    : "gray";
 
   return (
     <components.Option {...props}>
@@ -44,16 +58,21 @@ const Option = (props: OptionProps<OptionType, false>) => {
 
 // Custom styles for react-select
 const customStyles: StylesConfig<OptionType, false> = {
-  option: (provided: CSSObject): CSSObject => ({
+  option: (provided: CSSObject, state: any): CSSObject => ({
     ...provided,
-    transition: "0.2s",
+    backgroundColor: state.isSelected
+      ? "lightgray"
+      : state.isFocused
+      ? "lightgray"
+      : undefined,
+    transition: "0.1s",
     "&:hover": {
-      background: "none", // remove or change hover background
+      background: "lightgray", // consistent hover background
     },
   }),
   menu: (provided: CSSObject): CSSObject => ({
     ...provided,
-    animation: "fade-in 0.2s",
+    animation: "none", // no animation for better performance
   }),
   // Add more custom styles here if necessary
 };
@@ -61,16 +80,49 @@ const customStyles: StylesConfig<OptionType, false> = {
 export const CreateTaskModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-}> = ({ isOpen, onClose }) => {
+  projectId: number;
+}> = ({ isOpen, onClose, projectId }) => {
+  const [selectedAssignee, setSelectedAssignee] = useState<string>();
+  const [assigneeIsInvalid, setAssigneeIsInvalid] = useState(false);
+  const queryClient = useQueryClient();
   const toast = useToast();
 
+  interface TaskAssigneeSuggestion {
+    full_name: string;
+    email: string;
+    role: string;
+  }
+
+  const setAssignee = (assignee: string | undefined) => {
+    setAssigneeIsInvalid(false);
+    setSelectedAssignee(assignee);
+  };
+
+  let list = useAsyncList<TaskAssigneeSuggestion>({
+    async load({ signal, cursor, filterText }) {
+      let res = await fetch(
+        `${API_URL}/project/${projectId}/members/search?query=${encodeURIComponent(
+          filterText ? filterText : ""
+        )}${cursor ? `&cursor=${cursor}` : ""}`,
+        { signal, credentials: "include" }
+      );
+      if (res.ok) {
+        let json = await res.json();
+        return {
+          items: json.results,
+          cursor: json.next,
+        };
+      } else {
+        return {
+          items: [],
+          cursor: null,
+        };
+      }
+    },
+  });
+
   const createTask = async (values: any, { resetForm }: any) => {
-    // Create task logic here
-    // Make sure to set appropriate endpoint URL and request body according to your API
-
     try {
-      // await API request to create task
-
       toast({
         title: "Task created!",
         position: "top",
@@ -104,15 +156,16 @@ export const CreateTaskModal: React.FC<{
           name: "",
           description: "",
           task_type: "",
-          status: "",
           priority: "",
+          taskAssignee: "",
+          points: 0,
         }}
         onSubmit={createTask}
       >
         {(props) => (
           <Form>
             <ModalContent>
-              <ModalHeader>Create a Task</ModalHeader>
+              <ModalHeader>New task</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <FormControl mb={4}>
@@ -124,6 +177,28 @@ export const CreateTaskModal: React.FC<{
                   <Field as={Textarea} name="description" />
                 </FormControl>
                 <FormControl mb={4}>
+                  <FormLabel>Assignee</FormLabel>
+                  <Autocomplete
+                    isInvalid={assigneeIsInvalid}
+                    items={list.items}
+                    isRequired={true}
+                    inputValue={list.filterText}
+                    onInputChange={list.setFilterText}
+                    loadingState={list.loadingState}
+                    onLoadMore={list.loadMore}
+                    onSelectionChange={(key) => {
+                      setAssignee(key ? key.toString() : undefined);
+                    }}
+                    placeholder="Search by name, role or email"
+                  >
+                    {(item) => (
+                      <Item key={item.email} textValue={item.full_name}>
+                        <UserSuggestion user={item} />
+                      </Item>
+                    )}
+                  </Autocomplete>
+                </FormControl>
+                <FormControl mb={4}>
                   <FormLabel>Task Type</FormLabel>
                   <Field name="task_type">
                     {({ field, form }: FieldProps) => (
@@ -133,33 +208,6 @@ export const CreateTaskModal: React.FC<{
                         options={[
                           { value: TaskType.Feature, label: "Feature" },
                           { value: TaskType.Bug, label: "Bug" },
-                        ]}
-                        onChange={(option) =>
-                          form.setFieldValue(field.name, option?.value)
-                        }
-                        required
-                      />
-                    )}
-                  </Field>
-                </FormControl>
-                <FormControl mb={4}>
-                  <FormLabel>Status</FormLabel>
-                  <Field name="status">
-                    {({ field, form }: FieldProps) => (
-                      <Select
-                        components={{ Option }}
-                        styles={customStyles}
-                        options={[
-                          {
-                            value: TaskStatus.InProgress,
-                            label: "In Progress",
-                          },
-                          { value: TaskStatus.Closed, label: "Closed" },
-                          { value: TaskStatus.Blocked, label: "Blocked" },
-                          {
-                            value: TaskStatus.UpForGrabs,
-                            label: "Up For Grabs",
-                          },
                         ]}
                         onChange={(option) =>
                           form.setFieldValue(field.name, option?.value)
@@ -188,6 +236,21 @@ export const CreateTaskModal: React.FC<{
                         }
                         required
                       />
+                    )}
+                  </Field>
+                </FormControl>
+                <FormControl mb={4}>
+                  <FormLabel>Points</FormLabel>
+                  <Field name="points">
+                    {({ field, form }: FieldProps) => (
+                      <NumberInput
+                        min={0}
+                        onChange={(valueString) =>
+                          form.setFieldValue(field.name, valueString)
+                        }
+                      >
+                        <NumberInputField {...field} />
+                      </NumberInput>
                     )}
                   </Field>
                 </FormControl>

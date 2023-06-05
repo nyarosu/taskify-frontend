@@ -184,7 +184,7 @@ async function getProjectInfo(projectId: number): Promise<Project> {
 async function updateRelativeTaskPriority(values: {
   project_id: number;
   newOrder: NewOrder;
-}): Promise<Task[]> {
+}): Promise<void> {
   const response = await fetch(
     `${API_URL}/project/${values.project_id}/priority`,
     {
@@ -204,8 +204,6 @@ async function updateRelativeTaskPriority(values: {
       "An error occured when updating task priority. Please try again later."
     );
   }
-  const data = await response.json();
-  return data.tasks;
 }
 
 export {

@@ -63,6 +63,7 @@ const ProjectPage = () => {
       </Head>
       <SlideFade in={true}>
         <CreateTaskModal
+          projectId={project ? project.id : 0}
           isOpen={createTaskModalIsOpen}
           onClose={onCreateTaskModalClose}
         />

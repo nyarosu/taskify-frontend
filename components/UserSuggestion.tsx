@@ -1,6 +1,6 @@
 import { Box, HStack, Text, Image, Avatar } from "@chakra-ui/react";
 
-interface UserItemProps {
+export interface UserItemProps {
   user: {
     full_name: string;
     email: string;
@@ -8,7 +8,7 @@ interface UserItemProps {
   };
 }
 
-const ProjectLeadSuggestion: React.FC<UserItemProps> = ({ user }) => {
+export const UserSuggestion: React.FC<UserItemProps> = ({ user }) => {
   return (
     <HStack>
       <Avatar
@@ -26,5 +26,3 @@ const ProjectLeadSuggestion: React.FC<UserItemProps> = ({ user }) => {
     </HStack>
   );
 };
-
-export default ProjectLeadSuggestion;

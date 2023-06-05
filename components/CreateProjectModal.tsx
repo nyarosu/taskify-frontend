@@ -34,7 +34,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { Autocomplete } from "./Autocomplete";
 import { Item, useAsyncList } from "react-stately";
 import { API_URL } from "@/pages/_app";
-import ProjectLeadSuggestion from "./ProjectLeadSuggestion";
+import { UserSuggestion } from "./UserSuggestion";
 import { useAppSelector } from "@/utils/redux_hooks";
 import { UserType } from "@/utils/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -227,7 +227,7 @@ const CreateProjectModal: React.FC<{ isOpen: boolean; onClose: () => void }> = (
                         >
                           {(item) => (
                             <Item key={item.email} textValue={item.full_name}>
-                              <ProjectLeadSuggestion user={item} />
+                              <UserSuggestion user={item} />
                             </Item>
                           )}
                         </Autocomplete>
