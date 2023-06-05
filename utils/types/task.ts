@@ -66,3 +66,18 @@ export const getColorSchemeForPriority = (type: TaskPriority) => {
       return "gray";
   }
 };
+
+export const getTextForPriorityValue = (priority: TaskPriority) => {
+  switch (priority) {
+    case TaskPriority.Critical:
+      return "Critical";
+    case TaskPriority.High:
+      return "High";
+    case TaskPriority.Medium:
+      return "Medium";
+    case TaskPriority.Low:
+      return "Low";
+    case TaskPriority.Backlog:
+      return "Backlog";
+  }
+};

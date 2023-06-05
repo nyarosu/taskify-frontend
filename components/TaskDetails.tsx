@@ -5,6 +5,7 @@ import {
   TaskType,
   getColorSchemeForPriority,
   getColorSchemeForStatus,
+  getTextForPriorityValue,
 } from "@/utils/types/task";
 import {
   Box,
@@ -54,7 +55,7 @@ export const TaskDetails: React.FC<{ task: Task }> = ({ task }) => {
       <Flex alignItems="center" justifyContent="space-between" mb={2}>
         <Text fontWeight="bold">Priority:</Text>
         <Badge colorScheme={getColorSchemeForPriority(task.priority)}>
-          {task.priority}
+          {getTextForPriorityValue(task.priority)}
         </Badge>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb={2}>
