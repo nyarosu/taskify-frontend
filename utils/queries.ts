@@ -4,7 +4,7 @@ import { QueryFunctionContext } from "@tanstack/react-query";
 import { useAppDispatch } from "./redux_hooks";
 import { Project, ProjectInfo } from "./types/project";
 import { NewOrder } from "@/components/TaskList";
-import { Task } from "./types/task";
+import { Task, TaskPriority, TaskType } from "./types/task";
 interface Credentials {
   email: string;
   password: string;
@@ -206,6 +206,47 @@ async function updateRelativeTaskPriority(values: {
   }
 }
 
+async function createNewTask(values: {
+  project_id: number;
+  name: string;
+  description: string;
+  task_type: TaskType;
+  priority: TaskPriority;
+  taskAssignee: string;
+  points: number;
+}): Promise<Task> {
+  const response = await fetch(
+    `${API_URL}/project/${values.project_id}/tasks`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        task_name: values.name,
+        task_description: values.description,
+        task_type: values.task_type,
+        assigned_to: values.taskAssignee,
+        priority: values.priority,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("Invalid task details.");
+    } else {
+      throw new Error(
+        "An error occured when creating a task. Please try again later."
+      );
+    }
+  }
+
+  const data = response.json();
+  return data;
+}
+
 export {
   postLogin,
   signout,
@@ -217,4 +258,5 @@ export {
   joinProject,
   getProjectInfo,
   updateRelativeTaskPriority,
+  createNewTask,
 };

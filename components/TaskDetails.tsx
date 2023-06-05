@@ -17,7 +17,6 @@ import {
   IconButton,
   useColorModeValue,
   Tooltip,
-  Wrap,
 } from "@chakra-ui/react";
 import { FaExpand } from "react-icons/fa"; // Icon for fullscreen
 import { useRouter } from "next/router";
@@ -30,18 +29,27 @@ export const TaskDetails: React.FC<{ task: Task }> = ({ task }) => {
     input.length > 150 ? `${input.substring(0, 150)}...` : input;
 
   return (
-    <Box p={6} borderRadius="lg" bg={bg} boxShadow="md" height="100%">
-      <Heading size="lg" mb={2}>
-        {task.name}
+    <Box
+      p={6}
+      borderRadius="lg"
+      bg={bg}
+      boxShadow="md"
+      height="100%"
+      maxW="100%"
+      overflowY="auto"
+    >
+      <Flex justifyContent="space-between" alignItems="center" mb={2}>
+        <Heading size="lg" isTruncated maxWidth="85%">
+          {task.name}
+        </Heading>
         <IconButton
           aria-label="Fullscreen"
           icon={<FaExpand />}
           size="sm"
           isRound
-          float="right"
           onClick={() => router.push(`/task/${task.id}`)}
         />
-      </Heading>
+      </Flex>
       <Divider mb={4} />
       <Flex alignItems="center" justifyContent="space-between" mb={2}>
         <Text fontWeight="bold">Priority:</Text>
@@ -79,11 +87,13 @@ export const TaskDetails: React.FC<{ task: Task }> = ({ task }) => {
         Description:
       </Text>
       <Tooltip label={task.description} placement="top" shouldWrapChildren>
-        <Wrap>
-          <Text isTruncated whiteSpace="normal">
-            {truncate(task.description ? task.description : "")}
-          </Text>
-        </Wrap>
+        <Text
+          whiteSpace="pre-line"
+          overflowWrap="break-word"
+          wordBreak="break-word"
+        >
+          {truncate(task.description ? task.description : "")}
+        </Text>
       </Tooltip>
     </Box>
   );

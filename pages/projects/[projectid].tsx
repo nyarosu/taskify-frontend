@@ -149,6 +149,8 @@ const ProjectPage = () => {
                       mt={5}
                       bg={selectedTask ? "gray.100" : ""}
                       h="100%"
+                      maxW="100%"
+                      overflow="auto"
                     >
                       {selectedTask && (
                         <SlideFade in={true}>

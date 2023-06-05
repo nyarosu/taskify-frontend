@@ -10,6 +10,7 @@ import {
   Skeleton,
   SkeletonText,
   SkeletonCircle,
+  Tooltip,
 } from "@chakra-ui/react";
 import { AiFillInfoCircle } from "react-icons/ai";
 import { IoSparklesSharp } from "react-icons/io5";
@@ -19,6 +20,9 @@ export const ProjectOverviewTab: React.FC<{
   project_description: string;
   project_lead: OrganizationUser | undefined;
 }> = (props) => {
+  const truncate = (input: string) =>
+    input.length > 150 ? `${input.substring(0, 150)}...` : input;
+
   return (
     <>
       <Box my={6} />
@@ -70,14 +74,21 @@ export const ProjectOverviewTab: React.FC<{
                 noOfLines={20}
                 fadeDuration={3}
               >
-                <Text
-                  style={{
-                    wordWrap: "break-word",
-                    overflowWrap: "break-word",
-                  }}
+                <Tooltip
+                  label={props.project_description}
+                  placement="top"
+                  shouldWrapChildren
                 >
-                  {props.project_description}
-                </Text>
+                  <Box maxH="10em" overflowY="auto">
+                    <Text
+                      whiteSpace="pre-line"
+                      overflowWrap="break-word"
+                      wordBreak="break-word"
+                    >
+                      {props.project_description}
+                    </Text>
+                  </Box>
+                </Tooltip>
               </SkeletonText>
             </VStack>
           </Box>

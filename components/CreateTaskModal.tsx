@@ -33,7 +33,9 @@ import { Item, useAsyncList } from "react-stately";
 import { UserType } from "@/utils/store";
 import { Autocomplete } from "./Autocomplete";
 import { UserSuggestion } from "./UserSuggestion";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNewTask } from "@/utils/queries";
+import { Project } from "@/utils/types/project";
 
 type OptionType = {
   label: string;
@@ -87,6 +89,23 @@ export const CreateTaskModal: React.FC<{
   const queryClient = useQueryClient();
   const toast = useToast();
 
+  const createTaskMutation = useMutation({
+    mutationFn: createNewTask,
+    onSuccess: (data, variables) => {
+      const currentData = queryClient.getQueryData<Project>([
+        "getProjectInfo",
+        projectId,
+      ]);
+
+      if (currentData) {
+        queryClient.setQueryData(["getProjectInfo", projectId], {
+          ...currentData,
+          tasks: [data, ...currentData.tasks],
+        });
+      }
+    },
+  });
+
   interface TaskAssigneeSuggestion {
     full_name: string;
     email: string;
@@ -122,7 +141,16 @@ export const CreateTaskModal: React.FC<{
   });
 
   const createTask = async (values: any, { resetForm }: any) => {
+    if (!selectedAssignee) {
+      setAssigneeIsInvalid(true);
+      return;
+    } else {
+      values.taskAssignee = selectedAssignee;
+      values.project_id = projectId;
+    }
+
     try {
+      await createTaskMutation.mutateAsync(values);
       toast({
         title: "Task created!",
         position: "top",
