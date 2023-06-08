@@ -11,9 +11,16 @@ import {
   SkeletonText,
   SkeletonCircle,
   Tooltip,
+  Icon,
 } from "@chakra-ui/react";
 import { AiFillInfoCircle } from "react-icons/ai";
 import { IoSparklesSharp } from "react-icons/io5";
+import { FiClock } from "react-icons/fi";
+
+interface OrganizationUser {
+  first_name: string;
+  last_name: string;
+}
 
 export const ProjectOverviewTab: React.FC<{
   isLoading: boolean;
@@ -22,6 +29,8 @@ export const ProjectOverviewTab: React.FC<{
 }> = (props) => {
   const truncate = (input: string) =>
     input.length > 150 ? `${input.substring(0, 150)}...` : input;
+
+  const projectETA = "Several weeks"; // Hardcoded for now.
 
   return (
     <>
@@ -122,14 +131,23 @@ export const ProjectOverviewTab: React.FC<{
                   Insights
                 </Heading>
               </HStack>
-              <Text
-                style={{
-                  wordWrap: "break-word",
-                  overflowWrap: "break-word",
-                }}
-              >
-                Placeholder for AI insights
-              </Text>
+              <Tooltip label={projectETA} placement="top" shouldWrapChildren>
+                <HStack spacing="0.5rem" align="center">
+                  <Icon as={FiClock} w={5} h={5} />
+                  <Box maxW="20em" overflowY="auto">
+                    <Text
+                      whiteSpace="pre-line"
+                      overflowWrap="break-word"
+                      wordBreak="break-word"
+                    >
+                      ETA:{" "}
+                      <Text as="span" fontWeight="bold">
+                        {projectETA}
+                      </Text>
+                    </Text>
+                  </Box>
+                </HStack>
+              </Tooltip>
             </VStack>
           </Box>
         ) : (

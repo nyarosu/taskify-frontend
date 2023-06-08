@@ -78,9 +78,9 @@ export const getColorSchemeForPriority = (type: TaskPriority) => {
 export const parseComplexityToText = (complexity: TaskComplexity) => {
   switch (complexity) {
     case TaskComplexity.VeryComplex:
-      return "This task may take several days or longer to complete.";
+      return "This task may take a week or longer to complete.";
     case TaskComplexity.Complex:
-      return "This task may take at least a day to complete.";
+      return "This task may take a few days to complete.";
     case TaskComplexity.Medium:
       return "This task may take several hours to complete.";
     case TaskComplexity.Simple:
