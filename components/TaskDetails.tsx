@@ -6,6 +6,7 @@ import {
   getColorSchemeForPriority,
   getColorSchemeForStatus,
   getTextForPriorityValue,
+  parseComplexityToText,
 } from "@/utils/types/task";
 import {
   Box,
@@ -18,8 +19,10 @@ import {
   IconButton,
   useColorModeValue,
   Tooltip,
+  Icon,
+  HStack,
 } from "@chakra-ui/react";
-import { FaExpand } from "react-icons/fa"; // Icon for fullscreen
+import { FaExpand, FaRobot } from "react-icons/fa"; // Icon for fullscreen and robot
 import { useRouter } from "next/router";
 
 export const TaskDetails: React.FC<{ task: Task }> = ({ task }) => {
@@ -69,6 +72,25 @@ export const TaskDetails: React.FC<{ task: Task }> = ({ task }) => {
         <Badge colorScheme={task.task_type === TaskType.Bug ? "red" : "green"}>
           {task.task_type === TaskType.Bug ? "Bug" : "Feature"}
         </Badge>
+      </Flex>
+      <Flex alignItems="center" justifyContent="space-between" mb={2}>
+        <Text fontWeight="bold">Complexity:</Text>
+        <Tooltip
+          label={
+            task.complexity
+              ? `${parseComplexityToText(task.complexity)}`
+              : "We were unable to automatically determine the complexity of this task."
+          }
+          placement="top"
+          shouldWrapChildren
+        >
+          <HStack>
+            <Icon as={FaRobot} />
+            <Badge colorScheme="teal">
+              {task.complexity ? task.complexity : "Not determined"}
+            </Badge>
+          </HStack>
+        </Tooltip>
       </Flex>
       <Flex alignItems="center" justifyContent="space-between" mb={4}>
         <Text fontWeight="bold">Assignee:</Text>

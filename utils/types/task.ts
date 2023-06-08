@@ -3,11 +3,19 @@ export interface Task {
   name: string;
   relative_priority: number;
   task_type: TaskType;
+  complexity: TaskComplexity | null;
   description: string | null;
   assigned_to: OrganizationUser;
   project_id: number;
   status: TaskStatus;
   priority: TaskPriority;
+}
+
+export enum TaskComplexity {
+  VeryComplex = "Very complex",
+  Complex = "Complex",
+  Medium = "Medium",
+  Simple = "Simple",
 }
 
 export enum TaskType {
@@ -64,6 +72,19 @@ export const getColorSchemeForPriority = (type: TaskPriority) => {
       return "green";
     case TaskPriority.Backlog:
       return "gray";
+  }
+};
+
+export const parseComplexityToText = (complexity: TaskComplexity) => {
+  switch (complexity) {
+    case TaskComplexity.VeryComplex:
+      return "This task may take several days or longer to complete.";
+    case TaskComplexity.Complex:
+      return "This task may take at least a day to complete.";
+    case TaskComplexity.Medium:
+      return "This task may take several hours to complete.";
+    case TaskComplexity.Simple:
+      return "This task should take half an hour or less to complete.";
   }
 };
 
