@@ -66,13 +66,6 @@ export const Navbar = () => {
                 >
                   Projects
                 </Button>
-                <Button
-                  aria-current={
-                    router.pathname === "/tasks" ? "page" : undefined
-                  }
-                >
-                  Tasks
-                </Button>
 
                 <Button
                   aria-current={
