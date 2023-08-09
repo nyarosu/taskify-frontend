@@ -1,38 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Taskify
 
-## Getting Started
+(still not 100% complete, but MVP is live at https://taskify.pro)
+Taskify is a software project management app that analyses your tasks/projects using deep learning. It allows you to create/manage organizations with many people, create projects within your organization and track tasks within a project. The twist is that all your tasks and projects are analyzed by deep learning to identify a number of signals. Currently, task complexity and ETA analysis is implemented, and I plan to implement github repository linking and analysis to perhaps automatically identify code pointers for a given task and so on. I talk more about how the ML works below.
 
-First, run the development server:
+## Tech stack
+React, Next.js, Chakra UI for the frontend. Rust, Actix-Web, PostgreSQL, Redis for the backend. Python + PyTorch for deep learning. All deployed to AWS with CI/CD (Docker on EC2, ElastiCache, RDS, API Gateway).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Deep learning techniques
+Currently, NLP is used to analyze task names + description + other info provided to generate a complexity estimate (a complexity category, along with an ETA). I tried a number of approaches for this, from simply grouping together task name/descriptions with similar "meanings" and predicting ETA based on points in the dataset with similar meaning, but this performed awfully, primarily because default embeddings did not capture the full meaning of software engineering terminology. As you might expect, software engineers kind of speak their own language detached from regular english - terms like "bug" are used to mean issue. Regular embeddings would not place the words "bug" and "issue" in the same vector space, ie regular embeddings based on regular english would not recognize that these two wards have the same meaning in a software context. As such, software engineering specific embeddings were required.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After gathering embeddings by doing more crawling and research, the model started to perform well against the training/validation data (before, it wasn't even improving in accuracy during training). After some more fine tuning of parameters, I've found that it is now able to predict complexity/ETA with a good amount of accuracy!
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
