@@ -1,6 +1,6 @@
 ## Taskify
 
-(still not 100% complete, but MVP is live at https://www.taskify.pro) \n
+(still not 100% complete, but MVP is live at https://www.taskify.pro)
 Taskify is a software project management app that analyses your tasks/projects using deep learning. It allows you to create/manage organizations with many people, create projects within your organization and track tasks within a project. The twist is that all your tasks and projects are analyzed by deep learning to identify a number of signals. Currently, task complexity and ETA analysis is implemented, and I plan to implement github repository linking and analysis to perhaps automatically identify code pointers for a given task and so on. I talk more about how the ML works below.
 
 ## Tech stack
